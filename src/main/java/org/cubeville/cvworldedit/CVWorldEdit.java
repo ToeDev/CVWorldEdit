@@ -42,6 +42,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
     private List<String> blockBlacklist;
     private Double commandCooldown;
     private int blockVolumeLimit;
+    private int clearPlotVolume;
 
     private HashMap<UUID, Double> commandCooldownList;
     private HashMap<UUID, Integer> taskIDCheckList;
@@ -111,6 +112,8 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
             logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Command Cooldown loaded from config: " + ChatColor.GOLD + commandCooldown);
             blockVolumeLimit = mainConfig.getInt("Block-Volume-Limit");
             logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Block Volume Limit loaded from config: " + ChatColor.GOLD + blockVolumeLimit);
+            blockVolumeLimit = mainConfig.getInt("Plot-Clear-Volume");
+            logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Block Volume Limit loaded from config: " + ChatColor.GOLD + blockVolumeLimit);
         } catch(IOException | InvalidConfigurationException e) {
             logger.log(Level.WARNING, ChatColor.LIGHT_PURPLE + "Unable to load config file", e);
         }
@@ -164,6 +167,10 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
 
     public int getBlockVolumeLimit() {
         return this.blockVolumeLimit;
+    }
+
+    public int getClearPlotVolume() {
+        return this.clearPlotVolume;
     }
 
     public HashMap<UUID, Double> getCommandCooldownList() {

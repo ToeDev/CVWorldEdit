@@ -45,7 +45,7 @@ public class CVWorldEditClearPlot extends Command {
 
         prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + "CVWorldEdit" + ChatColor.GRAY + "]" + " ";
 
-        plotVolume = 820080; //22500000 (cvsize)
+        this.plotVolume = plugin.getClearPlotVolume();
         this.taskIDCheckList = plugin.getTaskIDCheckList();
         this.taskIDClearList = plugin.getTaskIDClearList();
         this.taskIDAdminClearList = plugin.getTaskIDAdminClearList();

@@ -1,5 +1,6 @@
 Command-Cooldown: 3
 Block-Volume-Limit: 50000
+Plot-Clear-Volume: 22500000 #this is CV specific. the volume of a player creative plot
 
 Block-Blacklist:
   - FIRE
