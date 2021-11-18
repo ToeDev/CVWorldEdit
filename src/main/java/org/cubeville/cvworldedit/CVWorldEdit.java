@@ -28,10 +28,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -83,7 +80,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
                 final FileOutputStream fileOutputStream = new FileOutputStream(configFile);
                 final byte[] buffer = new byte[4096];
                 int bytesRead;
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                while ((bytesRead = Objects.requireNonNull(inputStream).read(buffer)) != -1) {
                     fileOutputStream.write(buffer, 0, bytesRead);
                 }
                 fileOutputStream.flush();
@@ -211,7 +208,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         }
         event.setCancelled(true);
         Player player = event.getPlayer();
-        org.bukkit.Location pos = event.getClickedBlock().getLocation();
+        org.bukkit.Location pos = Objects.requireNonNull(event.getClickedBlock()).getLocation();
         BlockVector3 vec = BlockVector3.at(pos.getBlockX(), pos.getBlockY(), pos.getBlockZ());
         BukkitPlayer bPlayer = BukkitAdapter.adapt(player);
         LocalSession localSession = WorldEdit.getInstance().getSessionManager().get(bPlayer);

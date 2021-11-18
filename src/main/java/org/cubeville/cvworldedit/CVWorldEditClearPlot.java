@@ -24,6 +24,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.cubeville.commons.commands.*;
 import org.cubeville.commons.utils.BlockUtils;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -182,7 +183,8 @@ public class CVWorldEditClearPlot extends Command {
                 double time = ((double) finishTime) / 1000.0D;
                 int timeMinutes = (int) time / 60;
                 double timeSeconds = time % 60;
-                sender.sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Plotclear completed in " + ChatColor.GOLD + timeMinutes + "m " + timeSeconds + "s");
+                DecimalFormat format = new DecimalFormat("0.000");
+                sender.sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Plotclear completed in " + ChatColor.GOLD + timeMinutes + "m " + format.format(timeSeconds) + "s");
             }, (long) clearPlotDelay * (i - 1));
         }).getTaskId();
         taskIDClearList.put(sender.getUniqueId(), taskIDClear);
@@ -237,7 +239,8 @@ public class CVWorldEditClearPlot extends Command {
                 double time = ((double) finishTime) / 1000.0D;
                 int timeMinutes = (int) time / 60;
                 double timeSeconds = time % 60;
-                adminSender.sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Plotclear completed in " + ChatColor.GOLD + timeMinutes + "m " + timeSeconds + "s");
+                DecimalFormat format = new DecimalFormat("0.000");
+                adminSender.sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Plotclear completed in " + ChatColor.GOLD + timeMinutes + "m " + format.format(timeSeconds) + "s");
             }, (long) clearPlotDelay * (i - 1));
         });
         double estimated = ((double) clearPlotDelay / 20.0D) * ((maxPoint.getBlockY() - lowest) + (plotYLevel - lowest));

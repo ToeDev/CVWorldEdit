@@ -12,6 +12,7 @@ import org.cubeville.commons.commands.*;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -91,7 +92,7 @@ public class CVWorldEditSet extends Command {
         LocalSession localSession = WorldEdit.getInstance().getSessionManager().get(bPlayer);
         int blocksChanged;
         try (EditSession editSession = localSession.createEditSession(bPlayer)) {
-            blocksChanged = editSession.setBlocks(playerSelection, BlockTypes.get(targetBlock).getDefaultState());
+            blocksChanged = editSession.setBlocks(playerSelection, Objects.requireNonNull(BlockTypes.get(targetBlock)).getDefaultState());
             localSession.remember(editSession);
         } catch (MaxChangedBlocksException e) {
             this.logger.log(Level.WARNING, "Unable to replace blocks in selection!", e);
