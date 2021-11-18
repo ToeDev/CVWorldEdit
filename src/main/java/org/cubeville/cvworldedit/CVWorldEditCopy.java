@@ -38,7 +38,7 @@ public class CVWorldEditCopy extends Command {
     public CVWorldEditCopy(CVWorldEdit plugin, CVWorldEditCheckBlacklist pluginBlacklist, CVWorldEditCheckRegion pluginCheckRegion) {
         super("");
 
-        prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + "CVWorldEdit" + ChatColor.GRAY + "]" + " ";
+        prefix = plugin.getPrefix();
 
         this.pluginBlacklist = pluginBlacklist;
         this.pluginCheckRegion = pluginCheckRegion;

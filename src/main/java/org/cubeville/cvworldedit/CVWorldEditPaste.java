@@ -33,7 +33,7 @@ public class CVWorldEditPaste extends Command {
     public CVWorldEditPaste(CVWorldEdit plugin, CVWorldEditCopy pluginCopy, CVWorldEditCheckRegion pluginCheckRegion, CVWorldEditCommandCooldown pluginCommandCooldown) {
         super("");
 
-        prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + "CVWorldEdit" + ChatColor.GRAY + "]" + " ";
+        prefix = plugin.getPrefix();
 
         this.pluginCheckRegion = pluginCheckRegion;
         this.pluginCommandCooldown = pluginCommandCooldown;

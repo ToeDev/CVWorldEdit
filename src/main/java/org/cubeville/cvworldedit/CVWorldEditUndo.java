@@ -21,12 +21,12 @@ public class CVWorldEditUndo extends Command {
 
     final private String prefix;
 
-    public CVWorldEditUndo(CVWorldEditCommandCooldown pluginCommandCooldown) {
+    public CVWorldEditUndo(CVWorldEdit plugin, CVWorldEditCommandCooldown pluginCommandCooldown) {
         super("");
 
         this.pluginCommandCooldown = pluginCommandCooldown;
 
-        prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + "CVWorldEdit" + ChatColor.GRAY + "]" + " ";
+        prefix = plugin.getPrefix();
     }
 
     @Override

@@ -27,7 +27,7 @@ public class CVWorldEditSize extends Command {
     public CVWorldEditSize(CVWorldEdit plugin) {
         super("");
 
-        prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + "CVWorldEdit" + ChatColor.GRAY + "]" + " ";
+        prefix = plugin.getPrefix();
 
         this.logger = plugin.getLogger();
     }

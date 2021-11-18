@@ -20,10 +20,10 @@ public class CVWorldEditPos2 extends Command {
 
     final private String prefix;
 
-    public CVWorldEditPos2() {
+    public CVWorldEditPos2(CVWorldEdit plugin) {
         super("");
 
-        prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + "CVWorldEdit" + ChatColor.GRAY + "]" + " ";
+        prefix = plugin.getPrefix();
     }
 
     @Override

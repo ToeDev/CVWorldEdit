@@ -32,7 +32,7 @@ public class CVWorldEditSet extends Command {
         super("");
         addBaseParameter(new CommandParameterString()); //target block
 
-        prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + "CVWorldEdit" + ChatColor.GRAY + "]" + " ";
+        prefix = plugin.getPrefix();
 
         this.plugin = plugin;
         this.pluginBlacklist = pluginBlacklist;

@@ -38,7 +38,7 @@ public class CVWorldEditReplace extends Command {
         addBaseParameter(new CommandParameterString()); //source block
         addBaseParameter(new CommandParameterString()); //target block
 
-        prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + "CVWorldEdit" + ChatColor.GRAY + "]" + " ";
+        this.prefix = plugin.getPrefix();
 
         this.plugin = plugin;
         this.pluginCommandCooldown = pluginCommandCooldown;

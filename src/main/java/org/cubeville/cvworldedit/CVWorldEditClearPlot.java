@@ -49,7 +49,7 @@ public class CVWorldEditClearPlot extends Command {
         super("");
         addOptionalBaseParameter(new CommandParameterString()); //target plot
 
-        prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + "CVWorldEdit" + ChatColor.GRAY + "]" + " ";
+        prefix = plugin.getPrefix();
 
         this.clearPlotEntityList = plugin.getClearPlotEntityList();
         this.clearPlotDelay = 10;

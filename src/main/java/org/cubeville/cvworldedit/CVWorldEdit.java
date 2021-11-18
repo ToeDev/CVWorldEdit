@@ -36,6 +36,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
 
     private Logger logger;
 
+    private String prefix;
     private List<String> blockBlacklist;
     private Double commandCooldown;
     private int blockVolumeLimit;
@@ -92,6 +93,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
             }
         }
 
+        this.prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + "CVWorldEdit" + ChatColor.GRAY + "]" + " ";
         this.commandCooldownList = new HashMap<>();
         this.taskIDCheckList = new HashMap<>();
         this.taskIDClearList = new HashMap<>();
@@ -137,17 +139,17 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         pasteParser = new CommandParser();
         pasteParser.addCommand(new CVWorldEditPaste(this, copyCommand, pluginCheckRegion, pluginCommandCooldown));
         undoParser = new CommandParser();
-        undoParser.addCommand(new CVWorldEditUndo(pluginCommandCooldown));
+        undoParser.addCommand(new CVWorldEditUndo(this, pluginCommandCooldown));
         redoParser = new CommandParser();
-        redoParser.addCommand(new CVWorldEditRedo(pluginCommandCooldown));
+        redoParser.addCommand(new CVWorldEditRedo(this, pluginCommandCooldown));
         clearHistoryParser = new CommandParser();
-        clearHistoryParser.addCommand(new CVWorldEditClearHistory());
+        clearHistoryParser.addCommand(new CVWorldEditClearHistory(this));
         pos1Parser = new CommandParser();
-        pos1Parser.addCommand(new CVWorldEditPos1());
+        pos1Parser.addCommand(new CVWorldEditPos1(this));
         pos2Parser = new CommandParser();
-        pos2Parser.addCommand(new CVWorldEditPos2());
+        pos2Parser.addCommand(new CVWorldEditPos2(this));
         wandParser = new CommandParser();
-        wandParser.addCommand(new CVWorldEditWand());
+        wandParser.addCommand(new CVWorldEditWand(this));
         expandParser = new CommandParser();
         expandParser.addCommand(new CVWorldEditExpand(this));
         contractParser = new CommandParser();
@@ -155,10 +157,14 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         sizeParser = new CommandParser();
         sizeParser.addCommand(new CVWorldEditSize(this));
         selectionParser = new CommandParser();
-        selectionParser.addCommand(new CVWorldEditSelection());
+        selectionParser.addCommand(new CVWorldEditSelection(this));
         Bukkit.getPluginManager().registerEvents(this, this);
 
         logger.info(ChatColor.LIGHT_PURPLE + "Plugin Enabled Successfully");
+    }
+
+    public String getPrefix() {
+        return this.prefix;
     }
 
     public List<String> getBlockBlacklist() {

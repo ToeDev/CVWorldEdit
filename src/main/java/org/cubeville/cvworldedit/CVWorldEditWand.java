@@ -15,10 +15,10 @@ public class CVWorldEditWand extends Command {
 
     final private String prefix;
 
-    public CVWorldEditWand() {
+    public CVWorldEditWand(CVWorldEdit plugin) {
         super("");
 
-        prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + "CVWorldEdit" + ChatColor.GRAY + "]" + " ";
+        prefix = plugin.getPrefix();
     }
 
     @Override

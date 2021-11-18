@@ -30,7 +30,7 @@ public class CVWorldEditContract extends Command {
         addBaseParameter(new CommandParameterString()); //number of blocks to expand
         addBaseParameter(new CommandParameterString()); //direction to expand
 
-        prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + "CVWorldEdit" + ChatColor.GRAY + "]" + " ";
+        prefix = plugin.getPrefix();
 
         this.logger = plugin.getLogger();
     }
