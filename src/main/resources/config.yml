@@ -6,10 +6,12 @@ Plot-Y-Level: 65 #this is CV specific. used for cvclearplot command to regen cle
 Plot-Clear-Entity:
   - DROPPED_ITEM
   - MINECART
-  - CHEST_MINECART
-  - FURNACE_MINECART
-  - TNT_MINECART
-  - HOPPER_MINECART
+  - MINECART_CHEST
+  - MINECART_FURNACE
+  - MINECART_TNT
+  - MINECART_HOPPER
+  - MINECART_COMMAND
+  - MINECART_MOB_SPAWNER
   - PAINTING
   - ITEM_FRAME
   - ARMOR_STAND
