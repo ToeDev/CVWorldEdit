@@ -6,6 +6,8 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.world.World;
+import com.sk89q.worldedit.world.block.BlockState;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.WorldGuard;
@@ -34,10 +36,11 @@ public class CVWorldEditClearPlot extends Command {
 
     final private String prefix;
 
+    final private int clearPlotDelay;
     final private int plotVolume;
+    final private int plotYLevel;
     final private HashMap<UUID, Integer> taskIDCheckList;
     final private HashMap<UUID, Integer> taskIDClearList;
-    final private HashMap<String, Integer> taskIDAdminClearList;
 
     public CVWorldEditClearPlot(CVWorldEdit plugin) {
         super("");
@@ -45,10 +48,11 @@ public class CVWorldEditClearPlot extends Command {
 
         prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + "CVWorldEdit" + ChatColor.GRAY + "]" + " ";
 
+        this.clearPlotDelay = 10;
         this.plotVolume = plugin.getClearPlotVolume();
+        this.plotYLevel = plugin.getPlotYLevel();
         this.taskIDCheckList = plugin.getTaskIDCheckList();
         this.taskIDClearList = plugin.getTaskIDClearList();
-        this.taskIDAdminClearList = plugin.getTaskIDAdminClearList();
 
         this.scheduler = plugin.getServer().getScheduler();
         this.logger = plugin.getLogger();
@@ -119,9 +123,7 @@ public class CVWorldEditClearPlot extends Command {
     //wait 10 seconds for the user to enter /cvclearplot again to confirm
     public CommandResponse clearPlotConfirm(Player sender, ProtectedRegion region) {
         int taskIDCheck;
-        taskIDCheck = scheduler.runTaskLater(this.plugin, () -> {
-            clearPlotCheck(sender);
-        }, 200).getTaskId();
+        taskIDCheck = scheduler.runTaskLater(this.plugin, () -> clearPlotCheck(sender), 200).getTaskId();
         taskIDCheckList.put(sender.getUniqueId(), taskIDCheck);
         return new CommandResponse(prefix + ChatColor.GOLD + "Are you sure you want to completely clear your plot " + ChatColor.LIGHT_PURPLE + region.getId().toLowerCase() + ChatColor.GOLD + "? Type /cvclearplot again to confirm. " + ChatColor.RED + "You can't /cvundo this!");
     }
@@ -137,67 +139,110 @@ public class CVWorldEditClearPlot extends Command {
     //perform the plotclear
     public CommandResponse clearPlot(Player sender, ProtectedRegion playerRegion) {
         BukkitPlayer bPlayer = BukkitAdapter.adapt(sender);
-        BlockVector3 max = playerRegion.getMaximumPoint();
-        BlockVector3 min = BlockVector3.at(playerRegion.getMinimumPoint().getBlockX(), max.getBlockY(), playerRegion.getMinimumPoint().getBlockZ());
-        CuboidRegion region = new CuboidRegion(max, min);
-        int lowest = playerRegion.getMinimumPoint().getBlockY() - 1;
+        World world = bPlayer.getWorld();
+        BlockVector3 maxPoint = playerRegion.getMaximumPoint();
+        BlockVector3 minPoint = playerRegion.getMinimumPoint();
+        int xMax = maxPoint.getBlockX();
+        int zMax = maxPoint.getBlockZ();
+        int xMin = minPoint.getBlockX();
+        int zMin = minPoint.getBlockZ();
+        int lowest = playerRegion.getMinimumPoint().getBlockY();
         long startTime = System.currentTimeMillis();
-        int taskIDClear;
-        taskIDClear = scheduler.runTaskTimer(this.plugin, new Runnable() {
-            int i;
-            public void run() {
+        int taskIDClear = scheduler.runTaskAsynchronously(this.plugin, () -> {
+            int i = 1;
+            for(int y = maxPoint.getBlockY(); y >= lowest; y--) {
+                BlockVector3 max = BlockVector3.at(xMax, y, zMax);
+                BlockVector3 min = BlockVector3.at(xMin, y, zMin);
+                scheduler.runTaskLaterAsynchronously(plugin, () -> {
+                    try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
+                        editSession.setBlocks(new CuboidRegion(max, min), Objects.requireNonNull(BlockTypes.AIR).getDefaultState());
+                    } catch (MaxChangedBlocksException e) {
+                        logger.log(Level.WARNING, "Unable to replace blocks in selection!");
+                    }
+                }, (long) clearPlotDelay * i);
                 i++;
-                try (EditSession editSession = WorldEdit.getInstance().newEditSession(bPlayer.getWorld())) {
-                    editSession.setBlocks(region, BlockTypes.AIR.getDefaultState());
-                } catch (MaxChangedBlocksException e) {
-                    logger.log(Level.WARNING, "Unable to replace blocks in selection!");
-                }
-                region.setPos1(max.subtract(0, i, 0));
-                region.setPos2(min.subtract(0, i, 0));
-                if (max.subtract(0, i, 0).getBlockY() == lowest) {
-                    scheduler.cancelTask(taskIDClearList.get(sender.getUniqueId()));
-                    taskIDClearList.put(sender.getUniqueId(), 0);
-                    long finishTime = System.currentTimeMillis() - startTime;
-                    double time = ((double) finishTime) / 1000.0D;
-                    sender.sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Plotclear completed in " + time + " seconds!");
-                }
             }
-        }, 0, 20).getTaskId();
+            for(int y = lowest; y <= plotYLevel; y++) {
+                BlockVector3 max = BlockVector3.at(xMax, y, zMax);
+                BlockVector3 min = BlockVector3.at(xMin, y, zMin);
+                final int newY = y;
+                scheduler.runTaskLaterAsynchronously(plugin, () -> {
+                    try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
+                        BlockState block = (newY != plotYLevel ? Objects.requireNonNull(BlockTypes.DIRT).getDefaultState() : Objects.requireNonNull(BlockTypes.GRASS_BLOCK).getDefaultState());
+                        editSession.setBlocks(new CuboidRegion(max, min), block);
+                    } catch (MaxChangedBlocksException e) {
+                        logger.log(Level.WARNING, "Unable to replace blocks in selection!");
+                    }
+                }, (long) clearPlotDelay * i);
+                i++;
+            }
+            scheduler.runTaskLaterAsynchronously(this.plugin, () -> {
+                taskIDClearList.put(sender.getUniqueId(), 0);
+                long finishTime = System.currentTimeMillis() - startTime;
+                double time = ((double) finishTime) / 1000.0D;
+                int timeMinutes = (int) time / 60;
+                double timeSeconds = time % 60;
+                sender.sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Plotclear completed in " + ChatColor.GOLD + timeMinutes + "m " + timeSeconds + "s");
+            }, (long) clearPlotDelay * (i - 1));
+        }).getTaskId();
         taskIDClearList.put(sender.getUniqueId(), taskIDClear);
-        double estimated = ((double) (max.getBlockY() - lowest)) / 1.0D;
-        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Plotclear started! Please wait until it is finished. Estimated time till completion: " + estimated + " seconds");
+        double estimated = ((double) clearPlotDelay / 20.0D) * ((maxPoint.getBlockY() - lowest) + (plotYLevel - lowest));
+        int estMinutes = (int) estimated / 60;
+        double estSeconds = estimated % 60;
+        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Plotclear started! Please wait until it is finished. Estimated time till completion: " + ChatColor.GOLD + estMinutes + "m " + estSeconds + "s");
     }
 
     //perform admin plotclear
     public CommandResponse adminClearPlot(Player adminSender, ProtectedRegion targetRegion) {
         BukkitPlayer bAdmin = BukkitAdapter.adapt(adminSender);
-        BlockVector3 max = targetRegion.getMaximumPoint();
-        BlockVector3 min = BlockVector3.at(targetRegion.getMinimumPoint().getBlockX(), max.getBlockY(), targetRegion.getMinimumPoint().getBlockZ());
-        CuboidRegion region = new CuboidRegion(max, min);
-        int lowest = targetRegion.getMinimumPoint().getBlockY() - 1;
+        World world = bAdmin.getWorld();
+        BlockVector3 maxPoint = targetRegion.getMaximumPoint();
+        BlockVector3 minPoint = targetRegion.getMinimumPoint();
+        int xMax = maxPoint.getBlockX();
+        int zMax = maxPoint.getBlockZ();
+        int xMin = minPoint.getBlockX();
+        int zMin = minPoint.getBlockZ();
+        int lowest = targetRegion.getMinimumPoint().getBlockY();
         long startTime = System.currentTimeMillis();
-        int taskIDAdminClear;
-        taskIDAdminClear = scheduler.runTaskTimer(this.plugin, new Runnable() {
-            int i;
-            public void run() {
+        scheduler.runTaskAsynchronously(this.plugin, () -> {
+            int i = 1;
+            for(int y = maxPoint.getBlockY(); y >= lowest; y--) {
+                BlockVector3 max = BlockVector3.at(xMax, y, zMax);
+                BlockVector3 min = BlockVector3.at(xMin, y, zMin);
+                scheduler.runTaskLaterAsynchronously(plugin, () -> {
+                    try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
+                        editSession.setBlocks(new CuboidRegion(max, min), Objects.requireNonNull(BlockTypes.AIR).getDefaultState());
+                    } catch (MaxChangedBlocksException e) {
+                        logger.log(Level.WARNING, "Unable to replace blocks in selection!");
+                    }
+                }, (long) clearPlotDelay * i);
                 i++;
-                try (EditSession editSession = WorldEdit.getInstance().newEditSession(bAdmin.getWorld())) {
-                    editSession.setBlocks(region, BlockTypes.AIR.getDefaultState());
-                } catch (MaxChangedBlocksException e) {
-                    logger.log(Level.WARNING, "Unable to replace blocks in selection!");
-                }
-                region.setPos1(max.subtract(0, i, 0));
-                region.setPos2(min.subtract(0, i, 0));
-                if (max.subtract(0, i, 0).getBlockY() == lowest) {
-                    scheduler.cancelTask(taskIDAdminClearList.get(targetRegion.getId()));
-                    long finishTime = System.currentTimeMillis() - startTime;
-                    double time = ((double) finishTime) / 1000.0D;
-                    adminSender.sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Plotclear completed in " + time + " seconds!");
-                }
             }
-        }, 0, 20).getTaskId();
-        taskIDAdminClearList.put(targetRegion.getId(), taskIDAdminClear);
-        double estimated = ((double) (max.getBlockY() - lowest)) / 1.0D;
-        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Plotclear started for plot: " + ChatColor.GOLD + targetRegion.getId().toLowerCase() + ChatColor.LIGHT_PURPLE + " Please wait until it is finished. Estimated time till completion: " + estimated + " seconds");
+            for(int y = lowest; y <= plotYLevel; y++) {
+                BlockVector3 max = BlockVector3.at(xMax, y, zMax);
+                BlockVector3 min = BlockVector3.at(xMin, y, zMin);
+                final int newY = y;
+                scheduler.runTaskLaterAsynchronously(plugin, () -> {
+                    try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
+                        BlockState block = (newY != plotYLevel ? Objects.requireNonNull(BlockTypes.DIRT).getDefaultState() : Objects.requireNonNull(BlockTypes.GRASS_BLOCK).getDefaultState());
+                        editSession.setBlocks(new CuboidRegion(max, min), block);
+                    } catch (MaxChangedBlocksException e) {
+                        logger.log(Level.WARNING, "Unable to replace blocks in selection!");
+                    }
+                }, (long) clearPlotDelay * i);
+                i++;
+            }
+            scheduler.runTaskLaterAsynchronously(this.plugin, () -> {
+                long finishTime = System.currentTimeMillis() - startTime;
+                double time = ((double) finishTime) / 1000.0D;
+                int timeMinutes = (int) time / 60;
+                double timeSeconds = time % 60;
+                adminSender.sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Plotclear completed in " + ChatColor.GOLD + timeMinutes + "m " + timeSeconds + "s");
+            }, (long) clearPlotDelay * (i - 1));
+        });
+        double estimated = ((double) clearPlotDelay / 20.0D) * ((maxPoint.getBlockY() - lowest) + (plotYLevel - lowest));
+        int estMinutes = (int) estimated / 60;
+        double estSeconds = estimated % 60;
+        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Plotclear started for plot: " + ChatColor.GOLD + targetRegion.getId().toLowerCase() + ChatColor.LIGHT_PURPLE + " Please wait until it is finished. Estimated time till completion: " + ChatColor.GOLD + estMinutes + "m " + estSeconds + "s");
     }
 }

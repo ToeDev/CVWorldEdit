@@ -43,13 +43,13 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
     private Double commandCooldown;
     private int blockVolumeLimit;
     private int clearPlotVolume;
+    private int plotYLevel;
 
     private HashMap<UUID, Double> commandCooldownList;
     private HashMap<UUID, Integer> taskIDCheckList;
     private HashMap<UUID, Integer> taskIDClearList;
     private HashMap<UUID, BlockArrayClipboard> clipboardList;
     private HashMap<UUID, Integer> blocksCopiedList;
-    private HashMap<String, Integer> taskIDAdminClearList;
 
     private CommandParser clearPlotParser;
     private CommandParser setParser;
@@ -97,7 +97,6 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         this.commandCooldownList = new HashMap<>();
         this.taskIDCheckList = new HashMap<>();
         this.taskIDClearList = new HashMap<>();
-        this.taskIDAdminClearList = new HashMap<>();
         this.clipboardList = new HashMap<>();
         this.blocksCopiedList = new HashMap<>();
         this.blockBlacklist = new ArrayList<>();
@@ -112,8 +111,10 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
             logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Command Cooldown loaded from config: " + ChatColor.GOLD + commandCooldown);
             blockVolumeLimit = mainConfig.getInt("Block-Volume-Limit");
             logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Block Volume Limit loaded from config: " + ChatColor.GOLD + blockVolumeLimit);
-            blockVolumeLimit = mainConfig.getInt("Plot-Clear-Volume");
-            logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Block Volume Limit loaded from config: " + ChatColor.GOLD + blockVolumeLimit);
+            clearPlotVolume = mainConfig.getInt("Plot-Clear-Volume");
+            logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Plot Block Volume loaded from config: " + ChatColor.GOLD + clearPlotVolume);
+            plotYLevel = mainConfig.getInt("Plot-Y-Level");
+            logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Plot Y-Level loaded from config: " + ChatColor.GOLD + plotYLevel);
         } catch(IOException | InvalidConfigurationException e) {
             logger.log(Level.WARNING, ChatColor.LIGHT_PURPLE + "Unable to load config file", e);
         }
@@ -173,6 +174,10 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         return this.clearPlotVolume;
     }
 
+    public int getPlotYLevel() {
+        return this.plotYLevel;
+    }
+
     public HashMap<UUID, Double> getCommandCooldownList() {
         return this.commandCooldownList;
     }
@@ -183,10 +188,6 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
 
     public HashMap<UUID, Integer> getTaskIDClearList() {
         return this.taskIDClearList;
-    }
-
-    public HashMap<String, Integer> getTaskIDAdminClearList() {
-        return this.taskIDAdminClearList;
     }
 
     public HashMap<UUID, BlockArrayClipboard> getClipboardList() {

@@ -1,6 +1,7 @@
 Command-Cooldown: 3
 Block-Volume-Limit: 50000
 Plot-Clear-Volume: 22500000 #this is CV specific. the volume of a player creative plot
+Plot-Y-Level: 65 #this is CV specific. used for cvclearplot command to regen cleared plot to a certain Y-level
 
 Block-Blacklist:
   - FIRE
