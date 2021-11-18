@@ -231,8 +231,10 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         RegionSelector selector = localSession.getRegionSelector(bPlayer.getWorld());
         if(event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
             selector.selectPrimary(vec, ActorSelectorLimits.forActor(bPlayer));
+            player.sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Position 1 set at " + vec.getBlockX() + ", " + vec.getBlockY() + ", " + vec.getBlockZ());
         } else if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             selector.selectSecondary(vec, ActorSelectorLimits.forActor(bPlayer));
+            player.sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Position 2 set at " + vec.getBlockX() + ", " + vec.getBlockY() + ", " + vec.getBlockZ());
         }
         selector.explainRegionAdjust(bPlayer, localSession);
     }
