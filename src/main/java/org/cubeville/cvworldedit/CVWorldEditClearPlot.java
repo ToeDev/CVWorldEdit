@@ -17,6 +17,7 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -37,6 +38,7 @@ public class CVWorldEditClearPlot extends Command {
 
     final private String prefix;
 
+    final private List<String> clearPlotEntityList;
     final private int clearPlotDelay;
     final private int plotVolume;
     final private int plotYLevel;
@@ -49,6 +51,7 @@ public class CVWorldEditClearPlot extends Command {
 
         prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + "CVWorldEdit" + ChatColor.GRAY + "]" + " ";
 
+        this.clearPlotEntityList = plugin.getClearPlotEntityList();
         this.clearPlotDelay = 10;
         this.plotVolume = plugin.getClearPlotVolume();
         this.plotYLevel = plugin.getPlotYLevel();
@@ -188,6 +191,9 @@ public class CVWorldEditClearPlot extends Command {
             }, (long) clearPlotDelay * (i - 1));
         }).getTaskId();
         taskIDClearList.put(sender.getUniqueId(), taskIDClear);
+        for(String entity : clearPlotEntityList) {
+            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "cvtools killentities type:" + entity + " wg:" + playerRegion.getId() + " world:" + world.getId());
+        }
         double estimated = ((double) clearPlotDelay / 20.0D) * ((maxPoint.getBlockY() - lowest) + (plotYLevel - lowest));
         int estMinutes = (int) estimated / 60;
         double estSeconds = estimated % 60;
@@ -235,6 +241,7 @@ public class CVWorldEditClearPlot extends Command {
                 i++;
             }
             scheduler.runTaskLaterAsynchronously(this.plugin, () -> {
+
                 long finishTime = System.currentTimeMillis() - startTime;
                 double time = ((double) finishTime) / 1000.0D;
                 int timeMinutes = (int) time / 60;
@@ -243,6 +250,9 @@ public class CVWorldEditClearPlot extends Command {
                 adminSender.sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Plotclear completed in " + ChatColor.GOLD + timeMinutes + "m " + format.format(timeSeconds) + "s");
             }, (long) clearPlotDelay * (i - 1));
         });
+        for(String entity : clearPlotEntityList) {
+            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "cvtools killentities type:" + entity + " wg:" + targetRegion.getId() + " world:" + world.getId());
+        }
         double estimated = ((double) clearPlotDelay / 20.0D) * ((maxPoint.getBlockY() - lowest) + (plotYLevel - lowest));
         int estMinutes = (int) estimated / 60;
         double estSeconds = estimated % 60;

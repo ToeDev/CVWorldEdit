@@ -41,6 +41,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
     private int blockVolumeLimit;
     private int clearPlotVolume;
     private int plotYLevel;
+    private List<String> clearPlotEntityList;
 
     private HashMap<UUID, Double> commandCooldownList;
     private HashMap<UUID, Integer> taskIDCheckList;
@@ -97,12 +98,17 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         this.clipboardList = new HashMap<>();
         this.blocksCopiedList = new HashMap<>();
         this.blockBlacklist = new ArrayList<>();
+        this.clearPlotEntityList = new ArrayList<>();
         YamlConfiguration mainConfig = new YamlConfiguration();
         try {
             mainConfig.load(configFile);
             for(String block : mainConfig.getStringList("Block-Blacklist")) {
                 blockBlacklist.add(block);
                 logger.log(Level.INFO, ChatColor.GOLD + block + ChatColor.LIGHT_PURPLE + " loaded from blacklist");
+            }
+            for(String entity : mainConfig.getStringList("Plot-Clear-Entity")) {
+                clearPlotEntityList.add(entity);
+                logger.log(Level.INFO, ChatColor.GOLD + entity + ChatColor.LIGHT_PURPLE + " loaded from plotclear entity list");
             }
             commandCooldown = mainConfig.getDouble("Command-Cooldown");
             logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Command Cooldown loaded from config: " + ChatColor.GOLD + commandCooldown);
@@ -157,6 +163,10 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
 
     public List<String> getBlockBlacklist() {
         return this.blockBlacklist;
+    }
+
+    public List<String> getClearPlotEntityList() {
+        return this.clearPlotEntityList;
     }
 
     public Double getCommandCooldown() {

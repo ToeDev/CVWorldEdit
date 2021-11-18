@@ -3,6 +3,17 @@ Block-Volume-Limit: 50000
 Plot-Clear-Volume: 22500000 #this is CV specific. the volume of a player creative plot
 Plot-Y-Level: 65 #this is CV specific. used for cvclearplot command to regen cleared plot to a certain Y-level
 
+Plot-Clear-Entity:
+  - DROPPED_ITEM
+  - MINECART
+  - CHEST_MINECART
+  - FURNACE_MINECART
+  - TNT_MINECART
+  - HOPPER_MINECART
+  - PAINTING
+  - ITEM_FRAME
+  - ARMOR_STAND
+
 Block-Blacklist:
   - FIRE
   - WATER
