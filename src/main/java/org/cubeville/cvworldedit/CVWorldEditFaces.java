@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CVWorldEditWalls extends Command {
+public class CVWorldEditFaces extends Command {
 
     final private Logger logger;
 
@@ -30,7 +30,7 @@ public class CVWorldEditWalls extends Command {
 
     final private String prefix;
 
-    public CVWorldEditWalls(CVWorldEdit plugin, CVWorldEditCheckBlacklist pluginBlacklist, CVWorldEditCheckRegion pluginCheckRegion, CVWorldEditCommandCooldown pluginCommandCooldown) {
+    public CVWorldEditFaces(CVWorldEdit plugin, CVWorldEditCheckBlacklist pluginBlacklist, CVWorldEditCheckRegion pluginCheckRegion, CVWorldEditCommandCooldown pluginCommandCooldown) {
         super("");
         addBaseParameter(new CommandParameterString()); //target block
 
@@ -79,9 +79,10 @@ public class CVWorldEditWalls extends Command {
         int length = playerSelection.getLength();
         int width = playerSelection.getWidth();
         int height = playerSelection.getHeight();
-        int changing = ((((length - 1) * 2) + ((width - 1) * 2)) * height);
-        if(plugin.getBlockVolumeLimit() < changing) {
-            return new CommandResponse(prefix + ChatColor.RED + "Your requested edit is too large! (" + ChatColor.GOLD + changing + ChatColor.RED + ")" +  " The maximum block count per command is " + ChatColor.GOLD + plugin.getBlockVolumeLimit());
+        int walls = ((((length - 1) * 2) + ((width - 1) * 2)) * height);
+        int floorCeiling = (((length - 2) * (width - 2)) * 2);
+        if(plugin.getBlockVolumeLimit() < walls + floorCeiling) {
+            return new CommandResponse(prefix + ChatColor.RED + "Your requested edit is too large! (" + ChatColor.GOLD + (walls + floorCeiling) + ChatColor.RED + ")" +  " The maximum block count per command is " + ChatColor.GOLD + plugin.getBlockVolumeLimit());
         }
 
         //Check if the player is on command cooldown check the CVWorldEditCommandCooldown class
@@ -98,7 +99,7 @@ public class CVWorldEditWalls extends Command {
         LocalSession localSession = WorldEdit.getInstance().getSessionManager().get(bPlayer);
         int blocksChanged;
         try (EditSession editSession = localSession.createEditSession(bPlayer)) {
-            blocksChanged = editSession.makeWalls(playerSelection, Objects.requireNonNull(BlockTypes.get(targetBlock)).getDefaultState());
+            blocksChanged = editSession.makeFaces(playerSelection, Objects.requireNonNull(BlockTypes.get(targetBlock)).getDefaultState());
             localSession.remember(editSession);
         } catch (MaxChangedBlocksException e) {
             this.logger.log(Level.WARNING, "Unable to replace blocks in selection!", e);

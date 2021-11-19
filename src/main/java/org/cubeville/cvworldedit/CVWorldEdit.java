@@ -54,6 +54,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
     private CommandParser clearPlotParser;
     private CommandParser setParser;
     private CommandParser wallsParser;
+    private CommandParser facesParser;
     private CommandParser replaceParser;
     private CommandParser copyParser;
     private CommandParser pasteParser;
@@ -138,6 +139,8 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         setParser.addCommand(new CVWorldEditSet(this, pluginBlacklist, pluginCheckRegion, pluginCommandCooldown));
         wallsParser = new CommandParser();
         wallsParser.addCommand(new CVWorldEditWalls(this, pluginBlacklist, pluginCheckRegion, pluginCommandCooldown));
+        facesParser = new CommandParser();
+        facesParser.addCommand(new CVWorldEditFaces(this, pluginBlacklist, pluginCheckRegion, pluginCommandCooldown));
         replaceParser = new CommandParser();
         replaceParser.addCommand(new CVWorldEditReplace(this, pluginBlacklist, pluginCheckRegion, pluginCommandCooldown));
         copyParser = new CommandParser();
@@ -277,6 +280,8 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
                 return setParser.execute(sender, args);
             case "cvwalls":
                 return wallsParser.execute(sender, args);
+            case "cvfaces":
+                return facesParser.execute(sender, args);
             case "cvreplace":
                 return replaceParser.execute(sender, args);
             case "cvcopy":
