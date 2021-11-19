@@ -1,5 +1,6 @@
 package org.cubeville.cvworldedit;
 
+import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -7,6 +8,7 @@ import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.extension.platform.permission.ActorSelectorLimits;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionSelector;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -247,10 +249,30 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         RegionSelector selector = localSession.getRegionSelector(bPlayer.getWorld());
         if(event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
             selector.selectPrimary(vec, ActorSelectorLimits.forActor(bPlayer));
-            player.sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Position 1 set at " + vec.getBlockX() + ", " + vec.getBlockY() + ", " + vec.getBlockZ());
+            if(selector.isDefined()) {
+                Region playerSelection;
+                try {
+                    playerSelection = selector.getRegion();
+                    player.sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Position 1 set at " + pos.getBlockX() + ", " + pos.getBlockY() + ", " + pos.getBlockZ() + " Block Count: " + playerSelection.getVolume());
+                } catch (IncompleteRegionException e) {
+                    player.sendMessage(prefix + ChatColor.RED + "Selection not retrieved! Contact Administrator!");
+                }
+            } else {
+                player.sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Position 1 set at " + vec.getBlockX() + ", " + vec.getBlockY() + ", " + vec.getBlockZ());
+            }
         } else if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             selector.selectSecondary(vec, ActorSelectorLimits.forActor(bPlayer));
-            player.sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Position 2 set at " + vec.getBlockX() + ", " + vec.getBlockY() + ", " + vec.getBlockZ());
+            if(selector.isDefined()) {
+                Region playerSelection;
+                try {
+                    playerSelection = selector.getRegion();
+                    player.sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Position 2 set at " + pos.getBlockX() + ", " + pos.getBlockY() + ", " + pos.getBlockZ() + " Block Count: " + playerSelection.getVolume());
+                } catch (IncompleteRegionException e) {
+                    player.sendMessage(prefix + ChatColor.RED + "Selection not retrieved! Contact Administrator!");
+                }
+            } else {
+                player.sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Position 2 set at " + vec.getBlockX() + ", " + vec.getBlockY() + ", " + vec.getBlockZ());
+            }
         }
         selector.explainRegionAdjust(bPlayer, localSession);
     }

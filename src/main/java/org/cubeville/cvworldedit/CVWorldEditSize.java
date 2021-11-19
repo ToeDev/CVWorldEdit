@@ -54,6 +54,6 @@ public class CVWorldEditSize extends Command {
         BlockVector3 selMin = playerSelection.getMinimumPoint();
         BlockVector3 selMax = playerSelection.getMaximumPoint();
 
-        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Corner 1: " + selMin, prefix + ChatColor.LIGHT_PURPLE + "Corner 2: " + selMax, prefix + ChatColor.LIGHT_PURPLE + "Dimensions: " + selDim, prefix + ChatColor.LIGHT_PURPLE + "Block Count: " +selVol);
+        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Corner 1: " + selMin, prefix + ChatColor.LIGHT_PURPLE + "Corner 2: " + selMax, prefix + ChatColor.LIGHT_PURPLE + "Dimensions: " + selDim, prefix + ChatColor.LIGHT_PURPLE + "Block Count: " + selVol);
     }
 }
