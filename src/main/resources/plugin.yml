@@ -30,6 +30,8 @@ commands:
     permission: CVWorldEdit.execute.commands
   cvset:
     permission: CVWorldEdit.execute.commands
+  cvwalls:
+    permission: CVWorldEdit.execute.commands
   cvreplace:
     permission: CVWorldEdit.execute.commands
   cvundo:
