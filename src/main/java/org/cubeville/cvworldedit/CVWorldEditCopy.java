@@ -29,17 +29,19 @@ public class CVWorldEditCopy extends Command {
     final private CVWorldEdit plugin;
     final private CVWorldEditCheckBlacklist pluginBlacklist;
     final private CVWorldEditCheckRegion pluginCheckRegion;
+    final private CVWorldEditRotate pluginRotate;
 
     final private HashMap<UUID, BlockArrayClipboard> clipboardList;
     final private HashMap<UUID, Integer> blocksCopiedList;
 
     final private String prefix;
 
-    public CVWorldEditCopy(CVWorldEdit plugin, CVWorldEditCheckBlacklist pluginBlacklist, CVWorldEditCheckRegion pluginCheckRegion) {
+    public CVWorldEditCopy(CVWorldEdit plugin, CVWorldEditRotate pluginRotate, CVWorldEditCheckBlacklist pluginBlacklist, CVWorldEditCheckRegion pluginCheckRegion) {
         super("");
 
         prefix = plugin.getPrefix();
 
+        this.pluginRotate = pluginRotate;
         this.pluginBlacklist = pluginBlacklist;
         this.pluginCheckRegion = pluginCheckRegion;
         this.plugin = plugin;
@@ -100,6 +102,9 @@ public class CVWorldEditCopy extends Command {
             int blocksCopied = forwardExtentCopy.getAffected();
             blocksCopiedList.put(sender.getUniqueId(), blocksCopied);
             clipboardList.put(sender.getUniqueId(), clipboard);
+            if(pluginRotate.getRotation(sender) != 0) {
+                pluginRotate.clearRotation(sender);
+            }
         }
         catch (WorldEditException e) {
             this.logger.log(Level.WARNING, "Unable to copy players selection to clipboard!");
@@ -107,6 +112,10 @@ public class CVWorldEditCopy extends Command {
         }
 
         return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Copied " + blocksCopiedList.get(sender.getUniqueId()) + " blocks.");
+    }
+
+    public void putClipboard(Player sender, BlockArrayClipboard clipboard) {
+        clipboardList.put(sender.getUniqueId(), clipboard);
     }
 
     public BlockArrayClipboard getClipboard(Player sender) {

@@ -26,6 +26,8 @@ commands:
     permission: CVWorldEdit.execute.commands
   cvpaste:
     permission: CVWorldEdit.execute.commands
+  cvrotate:
+    permission: CVWorldEdit.execute.commands
   cvset:
     permission: CVWorldEdit.execute.commands
   cvreplace:

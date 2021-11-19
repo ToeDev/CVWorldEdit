@@ -8,6 +8,7 @@ import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
+import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import org.bukkit.ChatColor;
@@ -26,11 +27,12 @@ public class CVWorldEditPaste extends Command {
     final private CVWorldEditCheckRegion pluginCheckRegion;
     final private CVWorldEditCommandCooldown pluginCommandCooldown;
     final private CVWorldEditCopy pluginCopy;
+    final private CVWorldEditRotate pluginRotate;
     final private Logger logger;
 
     final private String prefix;
 
-    public CVWorldEditPaste(CVWorldEdit plugin, CVWorldEditCopy pluginCopy, CVWorldEditCheckRegion pluginCheckRegion, CVWorldEditCommandCooldown pluginCommandCooldown) {
+    public CVWorldEditPaste(CVWorldEdit plugin, CVWorldEditCopy pluginCopy, CVWorldEditRotate pluginRotate, CVWorldEditCheckRegion pluginCheckRegion, CVWorldEditCommandCooldown pluginCommandCooldown) {
         super("");
 
         prefix = plugin.getPrefix();
@@ -38,6 +40,7 @@ public class CVWorldEditPaste extends Command {
         this.pluginCheckRegion = pluginCheckRegion;
         this.pluginCommandCooldown = pluginCommandCooldown;
         this.pluginCopy = pluginCopy;
+        this.pluginRotate = pluginRotate;
         this.logger = plugin.getLogger();
     }
 
@@ -61,6 +64,9 @@ public class CVWorldEditPaste extends Command {
         int z = bPlayer.getLocation().getBlockZ();
         BlockArrayClipboard clipboard = pluginCopy.getClipboard(sender);
         ClipboardHolder holder = new ClipboardHolder(pluginCopy.getClipboard(sender));
+        int rotation = pluginRotate.getRotation(sender);
+        AffineTransform transform = new AffineTransform().rotateY(-rotation);
+        holder.setTransform(holder.getTransform().combine(transform));
         BlockVector3 clipboardOffset = clipboard.getRegion().getMinimumPoint().subtract(clipboard.getOrigin());
         Vector3 realTo = BlockVector3.at(x, y, z).toVector3().add(holder.getTransform().apply(clipboardOffset.toVector3()));
         Vector3 max = realTo.add(holder.getTransform().apply(clipboard.getRegion().getMaximumPoint().subtract(clipboard.getRegion().getMinimumPoint()).toVector3()));

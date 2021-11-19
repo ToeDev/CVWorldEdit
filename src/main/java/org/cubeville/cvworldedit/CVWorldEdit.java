@@ -49,12 +49,14 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
     private HashMap<UUID, Integer> taskIDClearList;
     private HashMap<UUID, BlockArrayClipboard> clipboardList;
     private HashMap<UUID, Integer> blocksCopiedList;
+    private HashMap<UUID, Integer> rotationYList;
 
     private CommandParser clearPlotParser;
     private CommandParser setParser;
     private CommandParser replaceParser;
     private CommandParser copyParser;
     private CommandParser pasteParser;
+    private CommandParser rotateParser;
     private CommandParser undoParser;
     private CommandParser redoParser;
     private CommandParser clearHistoryParser;
@@ -94,6 +96,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         }
 
         this.prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + "CVWorldEdit" + ChatColor.GRAY + "]" + " ";
+        this.rotationYList = new HashMap<>();
         this.commandCooldownList = new HashMap<>();
         this.taskIDCheckList = new HashMap<>();
         this.taskIDClearList = new HashMap<>();
@@ -129,15 +132,18 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         CVWorldEditCheckBlacklist pluginBlacklist = new CVWorldEditCheckBlacklist(this);
         CVWorldEditCheckRegion pluginCheckRegion = new CVWorldEditCheckRegion();
         CVWorldEditCommandCooldown pluginCommandCooldown = new CVWorldEditCommandCooldown(this);
+        CVWorldEditRotate pluginRotate = new CVWorldEditRotate(this);
         setParser = new CommandParser();
         setParser.addCommand(new CVWorldEditSet(this, pluginBlacklist, pluginCheckRegion, pluginCommandCooldown));
         replaceParser = new CommandParser();
         replaceParser.addCommand(new CVWorldEditReplace(this, pluginBlacklist, pluginCheckRegion, pluginCommandCooldown));
         copyParser = new CommandParser();
-        CVWorldEditCopy copyCommand = new CVWorldEditCopy(this, pluginBlacklist, pluginCheckRegion);
+        CVWorldEditCopy copyCommand = new CVWorldEditCopy(this, pluginRotate, pluginBlacklist, pluginCheckRegion);
         copyParser.addCommand(copyCommand);
+        rotateParser = new CommandParser();
+        rotateParser.addCommand(new CVWorldEditRotate(this));
         pasteParser = new CommandParser();
-        pasteParser.addCommand(new CVWorldEditPaste(this, copyCommand, pluginCheckRegion, pluginCommandCooldown));
+        pasteParser.addCommand(new CVWorldEditPaste(this, copyCommand, pluginRotate, pluginCheckRegion, pluginCommandCooldown));
         undoParser = new CommandParser();
         undoParser.addCommand(new CVWorldEditUndo(this, pluginCommandCooldown));
         redoParser = new CommandParser();
@@ -165,6 +171,10 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
 
     public String getPrefix() {
         return this.prefix;
+    }
+
+    public HashMap<UUID, Integer> getRotationYList() {
+        return this.rotationYList;
     }
 
     public List<String> getBlockBlacklist() {
@@ -268,6 +278,8 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
                 return copyParser.execute(sender, args);
             case "cvpaste":
                 return pasteParser.execute(sender, args);
+            case "cvrotate":
+                return rotateParser.execute(sender, args);
             case "cvundo":
                 return undoParser.execute(sender, args);
             case "cvredo":
