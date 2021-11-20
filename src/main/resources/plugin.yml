@@ -6,6 +6,8 @@ description: 'CVWorldEdit Plugin'
 author: ToeMan_
 depend: [WorldGuard,WorldEdit,CVTools]
 commands:
+  cvhelp:
+    permission: CVWorldEdit.selection.commands
   cvwand:
     permission: CVWorldEdit.selection.commands
   cvpos1:

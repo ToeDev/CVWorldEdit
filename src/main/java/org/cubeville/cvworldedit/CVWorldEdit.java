@@ -53,6 +53,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
     private HashMap<UUID, Integer> blocksCopiedList;
     private HashMap<UUID, Integer> rotationYList;
 
+    private CommandParser helpParser;
     private CommandParser clearPlotParser;
     private CommandParser setParser;
     private CommandParser wallsParser;
@@ -131,6 +132,8 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
             logger.log(Level.WARNING, ChatColor.LIGHT_PURPLE + "Unable to load config file", e);
         }
 
+        helpParser = new CommandParser();
+        helpParser.addCommand(new CVWorldEditHelp());
         clearPlotParser = new CommandParser();
         clearPlotParser.addCommand(new CVWorldEditClearPlot(this));
         CVWorldEditCheckBlacklist pluginBlacklist = new CVWorldEditCheckBlacklist(this);
@@ -281,6 +284,8 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         switch(command.getName().toLowerCase()) {
+            case "cvhelp":
+                return helpParser.execute(sender, args);
             case "cvclearplot":
                 return clearPlotParser.execute(sender, args);
             case "cvpos1":
