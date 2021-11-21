@@ -45,6 +45,8 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
     private int clearPlotVolume;
     private int plotYLevel;
     private List<String> clearPlotEntityList;
+    private HashMap<UUID, String> clearPlotRunningList;
+    private int clearPlotRunningLimit;
 
     private HashMap<UUID, Double> commandCooldownList;
     private HashMap<UUID, Integer> taskIDCheckList;
@@ -109,6 +111,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         this.blocksCopiedList = new HashMap<>();
         this.blockBlacklist = new ArrayList<>();
         this.clearPlotEntityList = new ArrayList<>();
+        this.clearPlotRunningList = new HashMap<>();
         YamlConfiguration mainConfig = new YamlConfiguration();
         try {
             mainConfig.load(configFile);
@@ -128,6 +131,8 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
             logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Plot Block Volume loaded from config: " + ChatColor.GOLD + clearPlotVolume);
             plotYLevel = mainConfig.getInt("Plot-Y-Level");
             logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Plot Y-Level loaded from config: " + ChatColor.GOLD + plotYLevel);
+            clearPlotRunningLimit = mainConfig.getInt("Plot-Clears-Running-At-A-Time");
+            logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Plot-Clears-Running-At-A-Time loaded from config: " + ChatColor.GOLD + clearPlotRunningLimit);
         } catch(IOException | InvalidConfigurationException e) {
             logger.log(Level.WARNING, ChatColor.LIGHT_PURPLE + "Unable to load config file", e);
         }
@@ -194,6 +199,14 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
 
     public List<String> getClearPlotEntityList() {
         return this.clearPlotEntityList;
+    }
+
+    public HashMap<UUID, String> getClearPlotRunningList() {
+        return this.clearPlotRunningList;
+    }
+
+    public int getClearPlotRunningLimit() {
+        return this.clearPlotRunningLimit;
     }
 
     public Double getCommandCooldown() {

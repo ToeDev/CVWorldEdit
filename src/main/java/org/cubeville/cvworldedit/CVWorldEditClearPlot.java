@@ -38,6 +38,8 @@ public class CVWorldEditClearPlot extends Command {
 
     final private String prefix;
 
+    final private HashMap<UUID, String> clearPlotRunningList;
+    final private int clearPlotRunningLimit;
     final private List<String> clearPlotEntityList;
     final private int clearPlotDelay;
     final private int plotVolume;
@@ -51,6 +53,8 @@ public class CVWorldEditClearPlot extends Command {
 
         prefix = plugin.getPrefix();
 
+        this.clearPlotRunningList = plugin.getClearPlotRunningList();
+        this.clearPlotRunningLimit = plugin.getClearPlotRunningLimit();
         this.clearPlotEntityList = plugin.getClearPlotEntityList();
         this.clearPlotDelay = 10;
         this.plotVolume = plugin.getClearPlotVolume();
@@ -82,6 +86,11 @@ public class CVWorldEditClearPlot extends Command {
             }
             return adminClearPlot(sender, targetRegion);
         } else {
+            //check if there are too many plotclears running at once defined by "clearPlotRunningLimit"
+            if(clearPlotRunningList.size() >= clearPlotRunningLimit) {
+                return new CommandResponse(prefix + ChatColor.RED + "The max amount of plotclears are currently running on the server! Please wait a few minutes and try again!");
+            }
+
             //check if a plotclear is already running
             if (taskIDClearList.containsKey(sender.getUniqueId()) && taskIDClearList.get(sender.getUniqueId()) != 0) {
                 return new CommandResponse(prefix + ChatColor.RED + "Plotclear in-progress! Please wait!");
@@ -109,6 +118,7 @@ public class CVWorldEditClearPlot extends Command {
                 playerRegion = regionCheck(localPlayer, applicableRegionSet);
                 scheduler.cancelTask(taskIDCheckList.get(sender.getUniqueId()));
                 taskIDCheckList.put(sender.getUniqueId(), 0);
+                clearPlotRunningList.put(sender.getUniqueId(), playerRegion.getId());
                 return clearPlot(sender, playerRegion);
             }
         }
@@ -187,6 +197,7 @@ public class CVWorldEditClearPlot extends Command {
                 int timeMinutes = (int) time / 60;
                 double timeSeconds = time % 60;
                 DecimalFormat format = new DecimalFormat("0.000");
+                clearPlotRunningList.remove(sender.getUniqueId());
                 sender.sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Plotclear completed in " + ChatColor.GOLD + timeMinutes + "m " + format.format(timeSeconds) + "s");
             }, (long) clearPlotDelay * (i - 1));
         }).getTaskId();
