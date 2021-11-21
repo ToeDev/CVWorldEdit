@@ -1,9 +1,31 @@
+################################################################
+# Cooldown in between entering certain block-altering commands #
+################################################################
 Command-Cooldown: 3
+
+################################################################################
+# Block volume limit per command (with the exception of the plotclear command) #
+################################################################################
 Block-Volume-Limit: 50000
-Plot-Clear-Volume: 22500000 #this is CV specific. the volume of a player creative plot
+
+#################################################################################################################
+# Pre-defined volume of the plot being cleared. this prevents any possibility of the wrong region being cleared #
+#################################################################################################################
+Plot-Clear-Volume: 22500000
+
+###################################################################
+# Pre-defined y level that a plotclear regenerates its terrain to #
+###################################################################
 Plot-Y-Level: 65 #this is CV specific. used for cvclearplot command to regen cleared plot to a certain Y-level
+
+################################################################################################################
+# Plotclears that can run at the same time. admin plotclears (ie /plotclear plot_2) are exempt from this limit #
+################################################################################################################
 Plot-Clears-Running-At-A-Time: 2
 
+###############################################
+# Entities that the plotclear command removes #
+###############################################
 Plot-Clear-Entity:
   - DROPPED_ITEM
   - MINECART
@@ -17,6 +39,9 @@ Plot-Clear-Entity:
   - ITEM_FRAME
   - ARMOR_STAND
 
+################################################################################################
+# Blocks that are banned from being used with a command (plotclear command is exempt obviously #
+################################################################################################
 Block-Blacklist:
   - FIRE
   - SOUL_FIRE
