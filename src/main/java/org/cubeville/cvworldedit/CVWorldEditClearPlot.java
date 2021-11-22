@@ -84,6 +84,9 @@ public class CVWorldEditClearPlot extends Command {
                 this.logger.log(Level.WARNING, "No region found by the name " + baseParameters.get(0).toString());
                 return new CommandResponse(prefix + ChatColor.RED + "No region found by the name " + baseParameters.get(0).toString());
             }
+            if(targetRegion.volume() != plotVolume) {
+                return new CommandResponse(prefix + ChatColor.RED + "You cannot run a plotclear on this region! If you believe this to be in error, please contact an administrator. If you are an administrator, check the Plot-Clear-Volume config option");
+            }
             return adminClearPlot(sender, targetRegion);
         } else {
             //check if there are too many plotclears running at once defined by "clearPlotRunningLimit"
