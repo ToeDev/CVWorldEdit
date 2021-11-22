@@ -187,6 +187,7 @@ public class CVWorldEditClearPlot extends Command {
                     try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
                         BlockState block = (newY != plotYLevel ? Objects.requireNonNull(BlockTypes.DIRT).getDefaultState() : Objects.requireNonNull(BlockTypes.GRASS_BLOCK).getDefaultState());
                         editSession.setBlocks(new CuboidRegion(max, min), block);
+                        if(newY == plotYLevel) editSession.makeWalls(new CuboidRegion(max, min), Objects.requireNonNull(BlockTypes.SEA_LANTERN).getDefaultState());
                     } catch (MaxChangedBlocksException e) {
                         logger.log(Level.WARNING, "Unable to replace blocks in selection!");
                     }
@@ -248,6 +249,7 @@ public class CVWorldEditClearPlot extends Command {
                     try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
                         BlockState block = (newY != plotYLevel ? Objects.requireNonNull(BlockTypes.DIRT).getDefaultState() : Objects.requireNonNull(BlockTypes.GRASS_BLOCK).getDefaultState());
                         editSession.setBlocks(new CuboidRegion(max, min), block);
+                        if(newY == plotYLevel) editSession.makeWalls(new CuboidRegion(max, min), Objects.requireNonNull(BlockTypes.SEA_LANTERN).getDefaultState());
                     } catch (MaxChangedBlocksException e) {
                         logger.log(Level.WARNING, "Unable to replace blocks in selection!");
                     }
