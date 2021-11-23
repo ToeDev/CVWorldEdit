@@ -44,6 +44,8 @@ commands:
     permission: CVWorldEdit.execute.commands
   cvclearhistory:
     permission: CVWorldEdit.execute.commands
+  cvclearclipboard:
+    permission: CVWorldEdit.execute.commands
   cvclearplot:
     permission: CVWorldEdit.clearplot.command
 

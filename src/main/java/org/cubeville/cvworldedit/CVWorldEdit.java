@@ -67,6 +67,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
     private CommandParser undoParser;
     private CommandParser redoParser;
     private CommandParser clearHistoryParser;
+    private CommandParser clearClipboardParser;
     private CommandParser pos1Parser;
     private CommandParser pos2Parser;
     private CommandParser wandParser;
@@ -166,6 +167,8 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         redoParser.addCommand(new CVWorldEditRedo(this, pluginCommandCooldown));
         clearHistoryParser = new CommandParser();
         clearHistoryParser.addCommand(new CVWorldEditClearHistory(this));
+        clearClipboardParser = new CommandParser();
+        clearClipboardParser.addCommand(new CVWorldEditClearClipboard(this, copyCommand));
         pos1Parser = new CommandParser();
         pos1Parser.addCommand(new CVWorldEditPos1(this));
         pos2Parser = new CommandParser();
@@ -336,6 +339,8 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
                 return redoParser.execute(sender, args);
             case "cvclearhistory":
                 return clearHistoryParser.execute(sender, args);
+            case "cvclearclipboard":
+                return clearClipboardParser.execute(sender, args);
             default:
                 return false;
         }

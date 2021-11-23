@@ -125,6 +125,12 @@ public class CVWorldEditCopy extends Command {
         return null;
     }
 
+    public void clearClipboard(Player sender) {
+        if(clipboardList.containsKey(sender.getUniqueId())) {
+            clipboardList.remove(sender.getUniqueId());
+        }
+    }
+
     public int getBlocksCopied(Player sender) {
         return blocksCopiedList.get(sender.getUniqueId());
     }
