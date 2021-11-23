@@ -9,6 +9,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionOperationException;
 import com.sk89q.worldedit.regions.RegionSelector;
+import com.sk89q.worldedit.util.Direction;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.*;
@@ -91,6 +92,50 @@ public class CVWorldEditExpand extends Command {
             case "e":
                 x = amount;
                 break;
+            case "left":
+            case "l":
+                Direction dirL = bPlayer.getCardinalDirection();
+                if(dirL.equals(Direction.NORTH)) {
+                    x = amount;
+                    isPositive = false;
+                    break;
+                }
+                if(dirL.equals(Direction.SOUTH)) {
+                    x = amount;
+                    break;
+                }
+                if(dirL.equals(Direction.WEST)) {
+                    z = amount;
+                    break;
+                }
+                if(dirL.equals(Direction.EAST)) {
+                    z = amount;
+                    isPositive = false;
+                    break;
+                }
+                return new CommandResponse(prefix + ChatColor.RED + "Not looking in a specific direction!" + ChatColor.LIGHT_PURPLE + " Ensure you are looking directly North, South, East, or West to use the left or right parameter.");
+            case "right":
+            case "r":
+                Direction dirR = bPlayer.getCardinalDirection();
+                if(dirR.equals(Direction.NORTH)) {
+                    x = amount;
+                    break;
+                }
+                if(dirR.equals(Direction.SOUTH)) {
+                    x = amount;
+                    isPositive = false;
+                    break;
+                }
+                if(dirR.equals(Direction.WEST)) {
+                    z = amount;
+                    isPositive = false;
+                    break;
+                }
+                if(dirR.equals(Direction.EAST)) {
+                    z = amount;
+                    break;
+                }
+                return new CommandResponse(prefix + ChatColor.RED + "Not looking in a specific direction!" + ChatColor.LIGHT_PURPLE + " Ensure you are looking directly North, South, East, or West to use the left or right parameter.");
             default:
                 return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /cvexpand <number> <direction>", ChatColor.LIGHT_PURPLE + "Example: /cvexpand 5 north");
         }
