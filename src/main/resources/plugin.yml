@@ -38,6 +38,8 @@ commands:
     permission: CVWorldEdit.execute.commands
   cvreplace:
     permission: CVWorldEdit.execute.commands
+  cvmove:
+    permission: CVWorldEdit.execute.commands
   cvundo:
     permission: CVWorldEdit.execute.commands
   cvredo:
