@@ -27,6 +27,7 @@ public class CVWorldEditHelp extends Command {
     final private String cvundo;
     final private String cvredo;
     final private String cvclearhistory;
+    final private String cvclearclipboard;
     final private String cvclearplot;
 
     public CVWorldEditHelp() {
@@ -48,6 +49,7 @@ public class CVWorldEditHelp extends Command {
         cvundo = ChatColor.GOLD + "/cvundo" + ChatColor.LIGHT_PURPLE + " - Undoes your last block-changing command";
         cvredo = ChatColor.GOLD + "/cvredo" + ChatColor.LIGHT_PURPLE + " - Redoes your last undone block-changing command";
         cvclearhistory = ChatColor.GOLD + "/cvclearhistory" + ChatColor.LIGHT_PURPLE + " - Clears your block-changing command from history";
+        cvclearclipboard = ChatColor.GOLD + "/cvclearclipboard" + ChatColor.LIGHT_PURPLE + " - Clears your current clipboard";
         cvclearplot = ChatColor.GOLD + "/cvclearplot" + ChatColor.LIGHT_PURPLE + " - Clears your entire plot";
     }
 
@@ -59,6 +61,6 @@ public class CVWorldEditHelp extends Command {
         }
 
         //Send Command info to player
-        return new CommandResponse(cvwand, cvpos, cvexpand, cvcontract, cvsel, cvsize, cvcopy, cvpaste, cvrotate, cvset, cvreplace, cvwalls, cvfaces, cvundo, cvredo, cvclearhistory, cvclearplot);
+        return new CommandResponse(cvwand, cvpos, cvexpand, cvcontract, cvsel, cvsize, cvcopy, cvpaste, cvrotate, cvset, cvreplace, cvwalls, cvfaces, cvundo, cvredo, cvclearhistory, cvclearclipboard, cvclearplot);
     }
 }
