@@ -101,9 +101,9 @@ public class CVWorldEditFaces extends Command {
         try (EditSession editSession = localSession.createEditSession(bPlayer)) {
             blocksChanged = editSession.makeFaces(playerSelection, Objects.requireNonNull(BlockTypes.get(targetBlock)).getDefaultState());
             localSession.remember(editSession);
-        } catch (MaxChangedBlocksException e) {
+        } catch (Exception e) {
             this.logger.log(Level.WARNING, "Unable to replace blocks in selection!", e);
-            return new CommandResponse(prefix + ChatColor.RED + "Unable to replace blocks in selection! Contact administrator!");
+            return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + targetBlock);
         }
         return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Setting " + blocksChanged + " " + targetBlock.toUpperCase());
     }
