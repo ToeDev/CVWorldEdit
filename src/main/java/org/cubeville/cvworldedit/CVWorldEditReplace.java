@@ -98,7 +98,7 @@ public class CVWorldEditReplace extends Command {
         try {
             to = WorldEdit.getInstance().getPatternFactory().parseFromInput(targetBlock, parserContext);
         } catch (InputParseException e) {
-            this.logger.log(Level.WARNING, "Unable to get pattern from targetBlock");
+            this.logger.log(Level.WARNING, "Unable to get pattern from targetBlock", e);
             return new CommandResponse(prefix + ChatColor.RED + "Unable to use target block! Contact administrator!");
         }
 

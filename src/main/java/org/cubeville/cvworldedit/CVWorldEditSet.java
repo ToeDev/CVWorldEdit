@@ -95,7 +95,7 @@ public class CVWorldEditSet extends Command {
             blocksChanged = editSession.setBlocks(playerSelection, Objects.requireNonNull(BlockTypes.get(targetBlock)).getDefaultState());
             localSession.remember(editSession);
         } catch (Exception e) {
-            this.logger.log(Level.WARNING, "Unable to replace blocks in selection!", e);
+            this.logger.log(Level.WARNING, "Unable to replace blocks in selection!");
             return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + targetBlock);
         }
         return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Setting " + blocksChanged + " " + targetBlock.toUpperCase());
