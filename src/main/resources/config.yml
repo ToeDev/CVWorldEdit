@@ -145,3 +145,5 @@ Block-Blacklist:
   - END_GATEWAY
   - NETHER_PORTAL
   - SPAWNER
+  - BELL
+  - ENCHANTING_TABLE
