@@ -20,6 +20,7 @@ public class CVWorldEditHelp extends Command {
     final private String cvcopy;
     final private String cvpaste;
     final private String cvrotate;
+    final private String cvmove;
     final private String cvset;
     final private String cvwalls;
     final private String cvfaces;
@@ -42,6 +43,7 @@ public class CVWorldEditHelp extends Command {
         cvcopy = ChatColor.GOLD + "/cvcopy" + ChatColor.LIGHT_PURPLE + " - Copy your current selection to the clipboard";
         cvpaste = ChatColor.GOLD + "/cvpaste" + ChatColor.LIGHT_PURPLE + " - Pastes your current clipboard where you're standing";
         cvrotate = ChatColor.GOLD + "/cvrotate <degrees>" + ChatColor.LIGHT_PURPLE + " - Rotates your clipboard on the Y axis";
+        cvmove = ChatColor.GOLD + "/cvmove <number> <direction>" + ChatColor.LIGHT_PURPLE + " - Move your selection in a direction";
         cvset = ChatColor.GOLD + "/cvset <targetBlock>" + ChatColor.LIGHT_PURPLE + " - Sets your current selection to the target block";
         cvreplace = ChatColor.GOLD + "/cvreplace <sourceBlock> <targetBlock>" + ChatColor.LIGHT_PURPLE + " - Replaces the source blocks in your selection with the target block";
         cvwalls = ChatColor.GOLD + "/cvwalls <targetBlock>" + ChatColor.LIGHT_PURPLE + " - Sets the sides/walls of your current selection to the target block";
@@ -61,6 +63,6 @@ public class CVWorldEditHelp extends Command {
         }
 
         //Send Command info to player
-        return new CommandResponse(cvwand, cvpos, cvexpand, cvcontract, cvsel, cvsize, cvcopy, cvpaste, cvrotate, cvset, cvreplace, cvwalls, cvfaces, cvundo, cvredo, cvclearhistory, cvclearclipboard, cvclearplot);
+        return new CommandResponse(cvwand, cvpos, cvexpand, cvcontract, cvsel, cvsize, cvcopy, cvpaste, cvrotate, cvmove, cvset, cvreplace, cvwalls, cvfaces, cvundo, cvredo, cvclearhistory, cvclearclipboard, cvclearplot);
     }
 }
