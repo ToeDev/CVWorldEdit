@@ -1,0 +1,4 @@
+#These are 3rd party plugin permissions required for CVWorldEdit use
+
+- fawe.worldguard
+- worldedit.anyblock.nbt
