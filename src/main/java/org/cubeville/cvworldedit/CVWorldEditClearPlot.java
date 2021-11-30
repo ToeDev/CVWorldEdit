@@ -211,7 +211,7 @@ public class CVWorldEditClearPlot extends Command {
         }
         double estimated = ((double) clearPlotDelay / 20.0D) * ((maxPoint.getBlockY() - lowest) + (plotYLevel - lowest));
         int estMinutes = (int) estimated / 60;
-        double estSeconds = estimated % 60;
+        double estSeconds = estimated % 60 + 1;
         return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Plotclear started! Please wait until it is finished. Estimated time till completion: " + ChatColor.GOLD + estMinutes + "m " + estSeconds + "s");
     }
 
@@ -271,7 +271,7 @@ public class CVWorldEditClearPlot extends Command {
         }
         double estimated = ((double) clearPlotDelay / 20.0D) * ((maxPoint.getBlockY() - lowest) + (plotYLevel - lowest));
         int estMinutes = (int) estimated / 60;
-        double estSeconds = estimated % 60;
+        double estSeconds = estimated % 60 + 1;
         return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Plotclear started for plot: " + ChatColor.GOLD + targetRegion.getId().toLowerCase() + ChatColor.LIGHT_PURPLE + " Please wait until it is finished. Estimated time till completion: " + ChatColor.GOLD + estMinutes + "m " + estSeconds + "s");
     }
 }
