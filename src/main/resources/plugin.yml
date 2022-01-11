@@ -1,54 +1,76 @@
 main: org.cubeville.cvworldedit.CVWorldEdit
 name: CVWorldEdit
-version: 0.1
-api-version: 1.16
+version: 1.18
+api-version: 1.18
 description: 'CVWorldEdit Plugin'
 author: ToeMan_
 depend: [WorldGuard,WorldEdit,CVTools]
 commands:
   cvhelp:
+    aliases: wehelp
     permission: CVWorldEdit.selection.commands
   cvwand:
+    aliases: wand
     permission: CVWorldEdit.selection.commands
   cvpos1:
+    aliases: pos1
     permission: CVWorldEdit.selection.commands
   cvpos2:
+    aliases: pos2
     permission: CVWorldEdit.selection.commands
   cvexpand:
+    aliases: expand
     permission: CVWorldEdit.selection.commands
   cvcontract:
+    aliases: contract
     permission: CVWorldEdit.selection.commands
   cvselection:
+    aliases: selection
     permission: CVWorldEdit.selection.commands
   cvsel:
+    aliases: sel
     permission: CVWorldEdit.selection.commands
   cvsize:
+    aliases: size
     permission: CVWorldEdit.selection.commands
   cvcopy:
+    aliases: copy
     permission: CVWorldEdit.execute.commands
   cvpaste:
+    aliases: paste
     permission: CVWorldEdit.execute.commands
   cvrotate:
+    aliases: rotate
     permission: CVWorldEdit.execute.commands
   cvset:
+    aliases: set
     permission: CVWorldEdit.execute.commands
   cvwalls:
+    aliases: walls
     permission: CVWorldEdit.execute.commands
   cvfaces:
+    aliases: faces
     permission: CVWorldEdit.execute.commands
   cvreplace:
+    aliases: replace
     permission: CVWorldEdit.execute.commands
   cvmove:
+    aliases: move
     permission: CVWorldEdit.execute.commands
   cvundo:
+    aliases: undo
     permission: CVWorldEdit.execute.commands
   cvredo:
+    aliases: redo
     permission: CVWorldEdit.execute.commands
   cvclearhistory:
+    aliases: clearhistory
     permission: CVWorldEdit.execute.commands
   cvclearclipboard:
+    aliases: clearclipboard
     permission: CVWorldEdit.execute.commands
   cvclearplot:
+    aliases: clearplot
     permission: CVWorldEdit.clearplot.command
 
 permissions:
