@@ -4,7 +4,7 @@ version: 1.18
 api-version: 1.18
 description: 'CVWorldEdit Plugin'
 author: ToeMan_
-depend: [WorldGuard,WorldEdit,CVTools]
+depend: [WorldGuard,WorldEdit,ProtocolLib,CVTools]
 commands:
   cvhelp:
     aliases: wehelp

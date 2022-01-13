@@ -193,7 +193,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(this, this);
 
         protocolManager = ProtocolLibrary.getProtocolManager();
-        new PacketListener(protocolManager);
+        getServer().getPluginManager().registerEvents(new PacketListener(this, protocolManager), this);
 
         logger.info(ChatColor.LIGHT_PURPLE + "Plugin Enabled Successfully");
     }
