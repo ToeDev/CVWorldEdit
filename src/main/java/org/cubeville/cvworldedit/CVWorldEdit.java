@@ -1,7 +1,5 @@
 package org.cubeville.cvworldedit;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -78,8 +76,6 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
     private CommandParser contractParser;
     private CommandParser sizeParser;
     private CommandParser selectionParser;
-
-    private ProtocolManager protocolManager;
 
     @Override
     public void onEnable() {
@@ -191,9 +187,6 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         selectionParser = new CommandParser();
         selectionParser.addCommand(new CVWorldEditSelection(this));
         Bukkit.getPluginManager().registerEvents(this, this);
-
-        protocolManager = ProtocolLibrary.getProtocolManager();
-        getServer().getPluginManager().registerEvents(new PacketListener(this, protocolManager), this);
 
         logger.info(ChatColor.LIGHT_PURPLE + "Plugin Enabled Successfully");
     }
