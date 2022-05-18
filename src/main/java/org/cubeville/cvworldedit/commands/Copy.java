@@ -1,4 +1,4 @@
-package org.cubeville.cvworldedit;
+package org.cubeville.cvworldedit.commands;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.LocalSession;
@@ -16,27 +16,30 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.*;
 import org.cubeville.commons.utils.BlockUtils;
+import org.cubeville.cvworldedit.CVWorldEdit;
+import org.cubeville.cvworldedit.CheckBlacklist;
+import org.cubeville.cvworldedit.CheckRegion;
 
 
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CVWorldEditCopy extends Command {
+public class Copy extends Command {
 
     final private Logger logger;
 
     final private CVWorldEdit plugin;
-    final private CVWorldEditCheckBlacklist pluginBlacklist;
-    final private CVWorldEditCheckRegion pluginCheckRegion;
-    final private CVWorldEditRotate pluginRotate;
+    final private CheckBlacklist pluginBlacklist;
+    final private CheckRegion pluginCheckRegion;
+    final private Rotate pluginRotate;
 
     final private HashMap<UUID, BlockArrayClipboard> clipboardList;
     final private HashMap<UUID, Integer> blocksCopiedList;
 
     final private String prefix;
 
-    public CVWorldEditCopy(CVWorldEdit plugin, CVWorldEditRotate pluginRotate, CVWorldEditCheckBlacklist pluginBlacklist, CVWorldEditCheckRegion pluginCheckRegion) {
+    public Copy(CVWorldEdit plugin, Rotate pluginRotate, CheckBlacklist pluginBlacklist, CheckRegion pluginCheckRegion) {
         super("");
 
         prefix = plugin.getPrefix();

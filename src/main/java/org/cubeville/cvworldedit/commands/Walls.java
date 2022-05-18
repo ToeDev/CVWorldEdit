@@ -1,4 +1,4 @@
-package org.cubeville.cvworldedit;
+package org.cubeville.cvworldedit.commands;
 
 import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -10,6 +10,10 @@ import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.Command;
 import org.cubeville.commons.commands.CommandParameterString;
 import org.cubeville.commons.commands.CommandResponse;
+import org.cubeville.cvworldedit.CVWorldEdit;
+import org.cubeville.cvworldedit.CheckBlacklist;
+import org.cubeville.cvworldedit.CheckRegion;
+import org.cubeville.cvworldedit.CommandCooldown;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -19,18 +23,18 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CVWorldEditFaces extends Command {
+public class Walls extends Command {
 
     final private Logger logger;
 
     final private CVWorldEdit plugin;
-    final private CVWorldEditCheckBlacklist pluginBlacklist;
-    final private CVWorldEditCheckRegion pluginCheckRegion;
-    final private CVWorldEditCommandCooldown pluginCommandCooldown;
+    final private CheckBlacklist pluginBlacklist;
+    final private CheckRegion pluginCheckRegion;
+    final private CommandCooldown pluginCommandCooldown;
 
     final private String prefix;
 
-    public CVWorldEditFaces(CVWorldEdit plugin, CVWorldEditCheckBlacklist pluginBlacklist, CVWorldEditCheckRegion pluginCheckRegion, CVWorldEditCommandCooldown pluginCommandCooldown) {
+    public Walls(CVWorldEdit plugin, CheckBlacklist pluginBlacklist, CheckRegion pluginCheckRegion, CommandCooldown pluginCommandCooldown) {
         super("");
         addBaseParameter(new CommandParameterString()); //target block
 
@@ -79,10 +83,9 @@ public class CVWorldEditFaces extends Command {
         int length = playerSelection.getLength();
         int width = playerSelection.getWidth();
         int height = playerSelection.getHeight();
-        int walls = ((((length - 1) * 2) + ((width - 1) * 2)) * height);
-        int floorCeiling = (((length - 2) * (width - 2)) * 2);
-        if(plugin.getBlockVolumeLimit() < walls + floorCeiling) {
-            return new CommandResponse(prefix + ChatColor.RED + "Your requested edit is too large! (" + ChatColor.GOLD + (walls + floorCeiling) + ChatColor.RED + ")" +  " The maximum block count per command is " + ChatColor.GOLD + plugin.getBlockVolumeLimit());
+        int changing = ((((length - 1) * 2) + ((width - 1) * 2)) * height);
+        if(plugin.getBlockVolumeLimit() < changing) {
+            return new CommandResponse(prefix + ChatColor.RED + "Your requested edit is too large! (" + ChatColor.GOLD + changing + ChatColor.RED + ")" +  " The maximum block count per command is " + ChatColor.GOLD + plugin.getBlockVolumeLimit());
         }
 
         //Check if the player is on command cooldown check the CVWorldEditCommandCooldown class
@@ -99,7 +102,7 @@ public class CVWorldEditFaces extends Command {
         LocalSession localSession = WorldEdit.getInstance().getSessionManager().get(bPlayer);
         int blocksChanged;
         try (EditSession editSession = localSession.createEditSession(bPlayer)) {
-            blocksChanged = editSession.makeFaces(playerSelection, Objects.requireNonNull(BlockTypes.get(targetBlock)).getDefaultState());
+            blocksChanged = editSession.makeWalls(playerSelection, Objects.requireNonNull(BlockTypes.get(targetBlock)).getDefaultState());
             localSession.remember(editSession);
         } catch (Exception e) {
             this.logger.log(Level.WARNING, "Unable to replace blocks in selection!", e);

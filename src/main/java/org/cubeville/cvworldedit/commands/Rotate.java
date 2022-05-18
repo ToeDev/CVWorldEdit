@@ -1,20 +1,21 @@
-package org.cubeville.cvworldedit;
+package org.cubeville.cvworldedit.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.Command;
 import org.cubeville.commons.commands.CommandParameterString;
 import org.cubeville.commons.commands.CommandResponse;
+import org.cubeville.cvworldedit.CVWorldEdit;
 
 import java.util.*;
 
-public class CVWorldEditRotate extends Command {
+public class Rotate extends Command {
 
     final private HashMap<UUID, Integer> rotationYList;
 
     final private String prefix;
 
-    public CVWorldEditRotate(CVWorldEdit plugin) {
+    public Rotate(CVWorldEdit plugin) {
         super("");
         addBaseParameter(new CommandParameterString()); // Y-axis rotation degrees
 

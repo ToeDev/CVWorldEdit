@@ -13,7 +13,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 
-public class CVWorldEditCheckRegion {
+public class CheckRegion {
 
     public boolean isOwner(BukkitPlayer bPlayer, Region playerSelection) {
         World world = bPlayer.getWorld();

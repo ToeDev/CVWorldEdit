@@ -1,4 +1,4 @@
-package org.cubeville.cvworldedit;
+package org.cubeville.cvworldedit.commands;
 
 import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -10,6 +10,9 @@ import com.sk89q.worldedit.util.Direction;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.*;
+import org.cubeville.cvworldedit.CVWorldEdit;
+import org.cubeville.cvworldedit.CheckRegion;
+import org.cubeville.cvworldedit.CommandCooldown;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -18,17 +21,17 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CVWorldEditMove extends Command {
+public class Move extends Command {
 
     final private Logger logger;
 
     final private CVWorldEdit plugin;
-    final private CVWorldEditCheckRegion pluginCheckRegion;
-    final private CVWorldEditCommandCooldown pluginCommandCooldown;
+    final private CheckRegion pluginCheckRegion;
+    final private CommandCooldown pluginCommandCooldown;
 
     final private String prefix;
 
-    public CVWorldEditMove(CVWorldEdit plugin, CVWorldEditCheckRegion pluginCheckRegion, CVWorldEditCommandCooldown pluginCommandCooldown) {
+    public Move(CVWorldEdit plugin, CheckRegion pluginCheckRegion, CommandCooldown pluginCommandCooldown) {
         super("");
         addBaseParameter(new CommandParameterString()); //number of blocks to move
         addBaseParameter(new CommandParameterString()); //direction to move

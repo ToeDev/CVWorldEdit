@@ -1,4 +1,4 @@
-package org.cubeville.cvworldedit;
+package org.cubeville.cvworldedit.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -6,16 +6,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.cubeville.commons.commands.*;
+import org.cubeville.cvworldedit.CVWorldEdit;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class CVWorldEditWand extends Command {
+public class Wand extends Command {
 
     final private String prefix;
 
-    public CVWorldEditWand(CVWorldEdit plugin) {
+    public Wand(CVWorldEdit plugin) {
         super("");
 
         prefix = plugin.getPrefix();

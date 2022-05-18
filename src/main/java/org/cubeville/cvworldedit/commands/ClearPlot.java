@@ -1,4 +1,4 @@
-package org.cubeville.cvworldedit;
+package org.cubeville.cvworldedit.commands;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
@@ -24,13 +24,14 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.cubeville.commons.commands.*;
 import org.cubeville.commons.utils.BlockUtils;
+import org.cubeville.cvworldedit.CVWorldEdit;
 
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CVWorldEditClearPlot extends Command {
+public class ClearPlot extends Command {
 
     final private Logger logger;
     final private Plugin plugin;
@@ -47,7 +48,7 @@ public class CVWorldEditClearPlot extends Command {
     final private HashMap<UUID, Integer> taskIDCheckList;
     final private HashMap<UUID, Integer> taskIDClearList;
 
-    public CVWorldEditClearPlot(CVWorldEdit plugin) {
+    public ClearPlot(CVWorldEdit plugin) {
         super("");
         addOptionalBaseParameter(new CommandParameterString()); //target plot
 

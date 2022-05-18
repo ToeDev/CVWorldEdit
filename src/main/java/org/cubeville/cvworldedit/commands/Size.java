@@ -1,4 +1,4 @@
-package org.cubeville.cvworldedit;
+package org.cubeville.cvworldedit.commands;
 
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.Command;
 import org.cubeville.commons.commands.CommandResponse;
+import org.cubeville.cvworldedit.CVWorldEdit;
 
 import java.util.List;
 import java.util.Map;
@@ -18,13 +19,13 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CVWorldEditSize extends Command {
+public class Size extends Command {
 
     final private Logger logger;
 
     final private String prefix;
 
-    public CVWorldEditSize(CVWorldEdit plugin) {
+    public Size(CVWorldEdit plugin) {
         super("");
 
         prefix = plugin.getPrefix();

@@ -1,4 +1,4 @@
-package org.cubeville.cvworldedit;
+package org.cubeville.cvworldedit.commands;
 
 import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -7,9 +7,11 @@ import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.cubeville.commons.commands.Command;
-import org.cubeville.commons.commands.CommandParameterString;
-import org.cubeville.commons.commands.CommandResponse;
+import org.cubeville.commons.commands.*;
+import org.cubeville.cvworldedit.CVWorldEdit;
+import org.cubeville.cvworldedit.CheckBlacklist;
+import org.cubeville.cvworldedit.CheckRegion;
+import org.cubeville.cvworldedit.CommandCooldown;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -19,18 +21,18 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CVWorldEditWalls extends Command {
+public class SetCommand extends Command {
 
     final private Logger logger;
 
     final private CVWorldEdit plugin;
-    final private CVWorldEditCheckBlacklist pluginBlacklist;
-    final private CVWorldEditCheckRegion pluginCheckRegion;
-    final private CVWorldEditCommandCooldown pluginCommandCooldown;
+    final private CheckBlacklist pluginBlacklist;
+    final private CheckRegion pluginCheckRegion;
+    final private CommandCooldown pluginCommandCooldown;
 
     final private String prefix;
 
-    public CVWorldEditWalls(CVWorldEdit plugin, CVWorldEditCheckBlacklist pluginBlacklist, CVWorldEditCheckRegion pluginCheckRegion, CVWorldEditCommandCooldown pluginCommandCooldown) {
+    public SetCommand(CVWorldEdit plugin, CheckBlacklist pluginBlacklist, CheckRegion pluginCheckRegion, CommandCooldown pluginCommandCooldown) {
         super("");
         addBaseParameter(new CommandParameterString()); //target block
 
@@ -48,7 +50,7 @@ public class CVWorldEditWalls extends Command {
     public CommandResponse execute(Player sender, Set<String> set, Map<String, Object> map, List<Object> baseParameters) {
 
         if (baseParameters.size() != 1) {
-            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /cvwalls <targetblock>");
+            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /cvset <targetblock>");
         }
         String targetBlock = baseParameters.get(0).toString().toLowerCase();
         if (BlockTypes.get(targetBlock) == null) {
@@ -76,12 +78,8 @@ public class CVWorldEditWalls extends Command {
         }
 
         //Check if the player's selection is larger than the max block volume limit
-        int length = playerSelection.getLength();
-        int width = playerSelection.getWidth();
-        int height = playerSelection.getHeight();
-        int changing = ((((length - 1) * 2) + ((width - 1) * 2)) * height);
-        if(plugin.getBlockVolumeLimit() < changing) {
-            return new CommandResponse(prefix + ChatColor.RED + "Your requested edit is too large! (" + ChatColor.GOLD + changing + ChatColor.RED + ")" +  " The maximum block count per command is " + ChatColor.GOLD + plugin.getBlockVolumeLimit());
+        if(plugin.getBlockVolumeLimit() < playerSelection.getVolume()) {
+            return new CommandResponse(prefix + ChatColor.RED + "Your selection is too large! (" + ChatColor.GOLD + playerSelection.getVolume() + ChatColor.RED + ")" +  " The maximum block count per command is " + ChatColor.GOLD + plugin.getBlockVolumeLimit());
         }
 
         //Check if the player is on command cooldown check the CVWorldEditCommandCooldown class
@@ -98,10 +96,10 @@ public class CVWorldEditWalls extends Command {
         LocalSession localSession = WorldEdit.getInstance().getSessionManager().get(bPlayer);
         int blocksChanged;
         try (EditSession editSession = localSession.createEditSession(bPlayer)) {
-            blocksChanged = editSession.makeWalls(playerSelection, Objects.requireNonNull(BlockTypes.get(targetBlock)).getDefaultState());
+            blocksChanged = editSession.setBlocks(playerSelection, Objects.requireNonNull(BlockTypes.get(targetBlock)).getDefaultState());
             localSession.remember(editSession);
         } catch (Exception e) {
-            this.logger.log(Level.WARNING, "Unable to replace blocks in selection!", e);
+            this.logger.log(Level.WARNING, "Unable to replace blocks in selection!");
             return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + targetBlock);
         }
         return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Setting " + blocksChanged + " " + targetBlock.toUpperCase());

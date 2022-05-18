@@ -1,4 +1,4 @@
-package org.cubeville.cvworldedit;
+package org.cubeville.cvworldedit.commands;
 
 import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -16,24 +16,28 @@ import org.bukkit.ChatColor;
 
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.*;
+import org.cubeville.cvworldedit.CVWorldEdit;
+import org.cubeville.cvworldedit.CheckBlacklist;
+import org.cubeville.cvworldedit.CheckRegion;
+import org.cubeville.cvworldedit.CommandCooldown;
 
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CVWorldEditReplace extends Command {
+public class Replace extends Command {
 
     final private Logger logger;
 
     final private CVWorldEdit plugin;
-    final private CVWorldEditCommandCooldown pluginCommandCooldown;
-    final private CVWorldEditCheckBlacklist pluginBlacklist;
-    final private CVWorldEditCheckRegion pluginCheckRegion;
+    final private CommandCooldown pluginCommandCooldown;
+    final private CheckBlacklist pluginBlacklist;
+    final private CheckRegion pluginCheckRegion;
 
     final private String prefix;
 
-    public CVWorldEditReplace(CVWorldEdit plugin, CVWorldEditCheckBlacklist pluginBlacklist, CVWorldEditCheckRegion pluginCheckRegion, CVWorldEditCommandCooldown pluginCommandCooldown) {
+    public Replace(CVWorldEdit plugin, CheckBlacklist pluginBlacklist, CheckRegion pluginCheckRegion, CommandCooldown pluginCommandCooldown) {
         super("");
         addBaseParameter(new CommandParameterString()); //source block
         addBaseParameter(new CommandParameterString()); //target block

@@ -1,4 +1,4 @@
-package org.cubeville.cvworldedit;
+package org.cubeville.cvworldedit.commands;
 
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
@@ -13,6 +13,7 @@ import com.sk89q.worldedit.util.Direction;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.*;
+import org.cubeville.cvworldedit.CVWorldEdit;
 
 import java.util.List;
 import java.util.Map;
@@ -20,13 +21,13 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CVWorldEditContract extends Command {
+public class Expand extends Command {
 
     final private Logger logger;
 
     final private String prefix;
 
-    public CVWorldEditContract(CVWorldEdit plugin) {
+    public Expand(CVWorldEdit plugin) {
         super("");
         addBaseParameter(new CommandParameterString()); //number of blocks to expand
         addBaseParameter(new CommandParameterString()); //direction to expand
@@ -40,7 +41,7 @@ public class CVWorldEditContract extends Command {
     public CommandResponse execute(Player sender, Set<String> set, Map<String, Object> map, List<Object> baseParameters) {
 
         if (baseParameters.size() != 2 || !checkInt(baseParameters.get(0).toString()) || checkInt(baseParameters.get(1).toString())) {
-            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /cvcontract <number> <direction>", ChatColor.LIGHT_PURPLE + "Example: /cvcontract 5 north");
+            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /cvexpand <number> <direction>", ChatColor.LIGHT_PURPLE + "Example: /cvexpand 5 north");
         }
 
         //Change players args into variables
@@ -59,7 +60,7 @@ public class CVWorldEditContract extends Command {
             return new CommandResponse(prefix + ChatColor.RED + "You haven't made a selection yet!");
         }
 
-        //determine direction of region contraction
+        //determine direction of region expansion
         int x = 0;
         int y = 0;
         int z = 0;
@@ -137,26 +138,26 @@ public class CVWorldEditContract extends Command {
                 }
                 return new CommandResponse(prefix + ChatColor.RED + "Not looking in a specific direction!" + ChatColor.LIGHT_PURPLE + " Ensure you are looking directly North, South, East, or West to use the left or right parameter.");
             default:
-                return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /cvcontract <number> <direction>", ChatColor.LIGHT_PURPLE + "Example: /cvcontract 5 north");
+                return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /cvexpand <number> <direction>", ChatColor.LIGHT_PURPLE + "Example: /cvexpand 5 north");
         }
 
         //apply region expansion
         long oldSize = playerSelection.getVolume();
         try {
-            playerSelection.contract(BlockVector3.at(
+            playerSelection.expand(BlockVector3.at(
                     ((isPositive) ? x : -x),
                     ((isPositive) ? y : -y),
                     ((isPositive) ? z : -z)));
 
         } catch (RegionOperationException e) {
-            this.logger.log(Level.WARNING, "Unable to contract region/selection");
-            return new CommandResponse(prefix + ChatColor.RED + "Unable to contract region/selection! Contact Administrator!");
+            this.logger.log(Level.WARNING, "Unable to expand region/selection");
+            return new CommandResponse(prefix + ChatColor.RED + "Unable to expand region/selection! Contact Administrator!");
         }
         selector.learnChanges();
         selector.explainRegionAdjust(bPlayer, localSession);
         long newSize = playerSelection.getVolume();
 
-        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Selection contracted " + (oldSize - newSize) + " blocks.");
+        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Selection expanded " + (newSize - oldSize) + " blocks.");
     }
 
     public boolean checkInt(String arg) {

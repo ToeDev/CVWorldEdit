@@ -1,4 +1,4 @@
-package org.cubeville.cvworldedit;
+package org.cubeville.cvworldedit.commands;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.LocalSession;
@@ -9,19 +9,21 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.Command;
 import org.cubeville.commons.commands.CommandResponse;
+import org.cubeville.cvworldedit.CVWorldEdit;
+import org.cubeville.cvworldedit.CommandCooldown;
 
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class CVWorldEditUndo extends Command {
+public class Undo extends Command {
 
-    final private CVWorldEditCommandCooldown pluginCommandCooldown;
+    final private CommandCooldown pluginCommandCooldown;
 
     final private String prefix;
 
-    public CVWorldEditUndo(CVWorldEdit plugin, CVWorldEditCommandCooldown pluginCommandCooldown) {
+    public Undo(CVWorldEdit plugin, CommandCooldown pluginCommandCooldown) {
         super("");
 
         this.pluginCommandCooldown = pluginCommandCooldown;

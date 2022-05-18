@@ -1,4 +1,4 @@
-package org.cubeville.cvworldedit;
+package org.cubeville.cvworldedit.commands;
 
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -7,16 +7,17 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.Command;
 import org.cubeville.commons.commands.CommandResponse;
+import org.cubeville.cvworldedit.CVWorldEdit;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class CVWorldEditClearHistory extends Command {
+public class ClearHistory extends Command {
 
     final private String prefix;
 
-    public CVWorldEditClearHistory(CVWorldEdit plugin) {
+    public ClearHistory(CVWorldEdit plugin) {
         super("");
 
         prefix = plugin.getPrefix();

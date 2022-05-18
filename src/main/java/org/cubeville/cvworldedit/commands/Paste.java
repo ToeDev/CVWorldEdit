@@ -1,4 +1,4 @@
-package org.cubeville.cvworldedit;
+package org.cubeville.cvworldedit.commands;
 
 import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -14,6 +14,9 @@ import com.sk89q.worldedit.session.ClipboardHolder;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.*;
+import org.cubeville.cvworldedit.CVWorldEdit;
+import org.cubeville.cvworldedit.CheckRegion;
+import org.cubeville.cvworldedit.CommandCooldown;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -22,17 +25,17 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CVWorldEditPaste extends Command {
+public class Paste extends Command {
 
-    final private CVWorldEditCheckRegion pluginCheckRegion;
-    final private CVWorldEditCommandCooldown pluginCommandCooldown;
-    final private CVWorldEditCopy pluginCopy;
-    final private CVWorldEditRotate pluginRotate;
+    final private CheckRegion pluginCheckRegion;
+    final private CommandCooldown pluginCommandCooldown;
+    final private Copy pluginCopy;
+    final private Rotate pluginRotate;
     final private Logger logger;
 
     final private String prefix;
 
-    public CVWorldEditPaste(CVWorldEdit plugin, CVWorldEditCopy pluginCopy, CVWorldEditRotate pluginRotate, CVWorldEditCheckRegion pluginCheckRegion, CVWorldEditCommandCooldown pluginCommandCooldown) {
+    public Paste(CVWorldEdit plugin, Copy pluginCopy, Rotate pluginRotate, CheckRegion pluginCheckRegion, CommandCooldown pluginCommandCooldown) {
         super("");
 
         prefix = plugin.getPrefix();

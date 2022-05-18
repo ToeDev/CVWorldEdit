@@ -3,12 +3,12 @@ package org.cubeville.cvworldedit;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class CVWorldEditCommandCooldown {
+public class CommandCooldown {
 
     final private double cooldown; //the command cooldown
     final private HashMap<UUID, Double> commandCooldownList;
 
-    public CVWorldEditCommandCooldown(CVWorldEdit plugin) {
+    public CommandCooldown(CVWorldEdit plugin) {
         this.commandCooldownList = plugin.getCommandCooldownList();
         this.cooldown = plugin.getCommandCooldown();
     }

@@ -1,4 +1,4 @@
-package org.cubeville.cvworldedit;
+package org.cubeville.cvworldedit.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class CVWorldEditHelp extends Command {
+public class Help extends Command {
 
     final private String cvwand;
     final private String cvpos;
@@ -31,7 +31,7 @@ public class CVWorldEditHelp extends Command {
     final private String cvclearclipboard;
     final private String cvclearplot;
 
-    public CVWorldEditHelp() {
+    public Help() {
         super("");
 
         cvwand = ChatColor.GOLD + "/cvwand" + ChatColor.LIGHT_PURPLE + " - Give yourself a selection wand";

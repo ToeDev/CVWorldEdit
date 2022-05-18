@@ -1,4 +1,4 @@
-package org.cubeville.cvworldedit;
+package org.cubeville.cvworldedit.commands;
 
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -9,16 +9,17 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.Command;
 import org.cubeville.commons.commands.CommandResponse;
+import org.cubeville.cvworldedit.CVWorldEdit;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class CVWorldEditSelection extends Command {
+public class Selection extends Command {
 
     final private String prefix;
 
-    public CVWorldEditSelection(CVWorldEdit plugin) {
+    public Selection(CVWorldEdit plugin) {
         super("");
 
         prefix = plugin.getPrefix();

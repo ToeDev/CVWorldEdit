@@ -1,21 +1,22 @@
-package org.cubeville.cvworldedit;
+package org.cubeville.cvworldedit.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.Command;
 import org.cubeville.commons.commands.CommandResponse;
+import org.cubeville.cvworldedit.CVWorldEdit;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class CVWorldEditClearClipboard extends Command {
+public class ClearClipboard extends Command {
 
-    final private CVWorldEditCopy pluginCopy;
+    final private Copy pluginCopy;
 
     final private String prefix;
 
-    public CVWorldEditClearClipboard(CVWorldEdit plugin, CVWorldEditCopy pluginCopy) {
+    public ClearClipboard(CVWorldEdit plugin, Copy pluginCopy) {
         super("");
 
         this.pluginCopy = pluginCopy;
