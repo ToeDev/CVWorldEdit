@@ -41,7 +41,7 @@ public class Contract extends Command {
     public CommandResponse execute(Player sender, Set<String> set, Map<String, Object> map, List<Object> baseParameters) {
 
         if (baseParameters.size() != 2 || !checkInt(baseParameters.get(0).toString()) || checkInt(baseParameters.get(1).toString())) {
-            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /cvcontract <number> <direction>", ChatColor.LIGHT_PURPLE + "Example: /cvcontract 5 north");
+            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /wecontract <number> <direction>", ChatColor.LIGHT_PURPLE + "Example: /wecontract 5 north");
         }
 
         //Change players args into variables
@@ -138,7 +138,7 @@ public class Contract extends Command {
                 }
                 return new CommandResponse(prefix + ChatColor.RED + "Not looking in a specific direction!" + ChatColor.LIGHT_PURPLE + " Ensure you are looking directly North, South, East, or West to use the left or right parameter.");
             default:
-                return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /cvcontract <number> <direction>", ChatColor.LIGHT_PURPLE + "Example: /cvcontract 5 north");
+                return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /wecontract <number> <direction>", ChatColor.LIGHT_PURPLE + "Example: /wecontract 5 north");
         }
 
         //apply region expansion

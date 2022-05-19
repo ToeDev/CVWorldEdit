@@ -35,7 +35,7 @@ public class Redo extends Command {
     public CommandResponse execute(Player sender, Set<String> set, Map<String, Object> map, List<Object> baseParameters) {
 
         if (baseParameters.size() > 0) {
-            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /cvredo");
+            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /weredo");
         }
 
         //Check if the player is on command cooldown check the CVWorldEditCommandCooldown class

@@ -72,10 +72,10 @@ public class ClearPlot extends Command {
     public CommandResponse execute(Player sender, Set<String> set, Map<String, Object> map, List<Object> baseParameters) {
 
         if(baseParameters.size() > 1) {
-            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /cvclearplot");
+            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /weclearplot");
         }
         if(baseParameters.size() == 1 && !sender.hasPermission("CVWorldEdit.admin")) {
-            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /cvclearplot");
+            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /weclearplot");
         }
         if(baseParameters.size() == 1 && sender.hasPermission("CVWorldEdit.admin")) {
             ProtectedRegion targetRegion;
@@ -111,7 +111,7 @@ public class ClearPlot extends Command {
                 if (playerRegion != null) {
                     return clearPlotConfirm(sender, playerRegion);
                 } else {
-                    return new CommandResponse(prefix + ChatColor.RED + "Stand in your plot to perform the /cvclearplot command!");
+                    return new CommandResponse(prefix + ChatColor.RED + "Stand in your plot to perform the /weclearplot command!");
                 }
             } else {
                 ProtectedRegion playerRegion;
@@ -143,7 +143,7 @@ public class ClearPlot extends Command {
         int taskIDCheck;
         taskIDCheck = scheduler.runTaskLater(this.plugin, () -> clearPlotCheck(sender), 200).getTaskId();
         taskIDCheckList.put(sender.getUniqueId(), taskIDCheck);
-        return new CommandResponse(prefix + ChatColor.GOLD + "Are you sure you want to completely clear your plot " + ChatColor.LIGHT_PURPLE + region.getId().toLowerCase() + ChatColor.GOLD + "? Type /cvclearplot again to confirm. " + ChatColor.RED + "You can't /cvundo this!");
+        return new CommandResponse(prefix + ChatColor.GOLD + "Are you sure you want to completely clear your plot " + ChatColor.LIGHT_PURPLE + region.getId().toLowerCase() + ChatColor.GOLD + "? Type /weclearplot again to confirm. " + ChatColor.RED + "You can't /weundo this!");
     }
 
     //check if the user confirmed plotclear

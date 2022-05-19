@@ -11,7 +11,7 @@ Block-Volume-Limit: 50000
 #################################################################################################################
 # Pre-defined volume of the plot being cleared. this prevents any possibility of the wrong region being cleared #
 #################################################################################################################
-Plot-Clear-Volume: 34560000
+Plot-Clear-Volume: 22500000
 
 ###################################################################
 # Pre-defined y level that a plotclear regenerates its terrain to #

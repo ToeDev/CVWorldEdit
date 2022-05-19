@@ -57,7 +57,7 @@ public class Copy extends Command {
     @Override
     public CommandResponse execute(Player sender, Set<String> set, Map<String, Object> map, List<Object> baseParameters) {
         if (baseParameters.size() > 0) {
-            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: Select an area then use /cvcopy");
+            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: Select an area then use /wecopy");
         }
 
         //Check if player has a cuboid selection made
@@ -67,7 +67,7 @@ public class Copy extends Command {
             region = BlockUtils.getWESelection(sender);
         }
         catch (IllegalArgumentException e) {
-            this.logger.log(Level.WARNING, "Players selection returned null", e);
+            this.logger.log(Level.WARNING, "Players selection returned null");
             return new CommandResponse(prefix + ChatColor.RED + "You haven't made a selection yet!");
         }
         if(!(region instanceof CuboidRegion)) {

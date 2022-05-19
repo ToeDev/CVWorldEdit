@@ -52,7 +52,7 @@ public class Walls extends Command {
     public CommandResponse execute(Player sender, Set<String> set, Map<String, Object> map, List<Object> baseParameters) {
 
         if (baseParameters.size() != 1) {
-            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /cvwalls <targetblock>");
+            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /wewalls <targetblock>");
         }
         String targetBlock = baseParameters.get(0).toString().toLowerCase();
         if (BlockTypes.get(targetBlock) == null) {

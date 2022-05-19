@@ -49,7 +49,7 @@ public class Move extends Command {
     public CommandResponse execute(Player sender, Set<String> set, Map<String, Object> map, List<Object> baseParameters) {
 
         if (baseParameters.size() != 2 || !checkInt(baseParameters.get(0).toString()) || checkInt(baseParameters.get(1).toString())) {
-            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /cvmove <number> <direction>", ChatColor.LIGHT_PURPLE + "Example: /cvmove 5 north");
+            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /wemove <number> <direction>", ChatColor.LIGHT_PURPLE + "Example: /wemove 5 north");
         }
 
         //Change players args into variables
@@ -144,7 +144,7 @@ public class Move extends Command {
                 }
                 return new CommandResponse(prefix + ChatColor.RED + "Not looking in a specific direction!" + ChatColor.LIGHT_PURPLE + " Ensure you are looking directly North, South, East, or West to use the left or right parameter.");
             default:
-                return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /cvexpand <number> <direction>", ChatColor.LIGHT_PURPLE + "Example: /cvexpand 5 north");
+                return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /weexpand <number> <direction>", ChatColor.LIGHT_PURPLE + "Example: /weexpand 5 north");
         }
 
         //Check if the player's selection plus movement is in a region they are owner of

@@ -10,67 +10,67 @@ commands:
     aliases: wehelp
     permission: CVWorldEdit.selection.commands
   cvwand:
-    aliases: wand
+    aliases: wewand
     permission: CVWorldEdit.selection.commands
   cvpos1:
-    aliases: pos1
+    aliases: wepos1
     permission: CVWorldEdit.selection.commands
   cvpos2:
-    aliases: pos2
+    aliases: wepos2
     permission: CVWorldEdit.selection.commands
   cvexpand:
-    aliases: expand
+    aliases: weexpand
     permission: CVWorldEdit.selection.commands
   cvcontract:
-    aliases: contract
+    aliases: wecontract
     permission: CVWorldEdit.selection.commands
   cvselection:
-    aliases: selection
+    aliases: weselection
     permission: CVWorldEdit.selection.commands
   cvsel:
-    aliases: sel
+    aliases: wesel
     permission: CVWorldEdit.selection.commands
   cvsize:
-    aliases: size
+    aliases: wesize
     permission: CVWorldEdit.selection.commands
   cvcopy:
-    aliases: copy
+    aliases: wecopy
     permission: CVWorldEdit.execute.commands
   cvpaste:
-    aliases: paste
+    aliases: wepaste
     permission: CVWorldEdit.execute.commands
   cvrotate:
-    aliases: rotate
+    aliases: werotate
     permission: CVWorldEdit.execute.commands
   cvset:
-    aliases: set
+    aliases: weset
     permission: CVWorldEdit.execute.commands
   cvwalls:
-    aliases: walls
+    aliases: wewalls
     permission: CVWorldEdit.execute.commands
   cvfaces:
-    aliases: faces
+    aliases: wefaces
     permission: CVWorldEdit.execute.commands
   cvreplace:
-    aliases: replace
+    aliases: wereplace
     permission: CVWorldEdit.execute.commands
   cvmove:
-    aliases: move
+    aliases: wemove
     permission: CVWorldEdit.execute.commands
   cvundo:
-    aliases: undo
+    aliases: weundo
     permission: CVWorldEdit.execute.commands
   cvredo:
-    aliases: redo
+    aliases: weredo
     permission: CVWorldEdit.execute.commands
   cvclearhistory:
-    aliases: clearhistory
+    aliases: weclearhistory
     permission: CVWorldEdit.execute.commands
   cvclearclipboard:
-    aliases: clearclipboard
+    aliases: weclearclipboard
     permission: CVWorldEdit.execute.commands
   cvclearplot:
-    aliases: clearplot
+    aliases: weclearplot
     permission: CVWorldEdit.clearplot.command
 
 permissions:

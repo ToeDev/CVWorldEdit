@@ -28,7 +28,7 @@ public class Rotate extends Command {
     public CommandResponse execute(Player sender, Set<String> set, Map<String, Object> map, List<Object> baseParameters) {
 
         if (baseParameters.size() != 1) {
-            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: Use /cvrotate <degrees> after copying an area with /cvcopy");
+            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: Use /werotate <degrees> after copying an area with /wecopy");
         }
 
         //Check if the provided rotation parameter is an integer
@@ -36,7 +36,7 @@ public class Rotate extends Command {
         try {
             rotateY = Integer.parseInt(baseParameters.get(0).toString());
         } catch(NumberFormatException e) {
-            return new CommandResponse(prefix + ChatColor.RED + "Invalid rotation parameter!" + ChatColor.LIGHT_PURPLE + " Proper Usage: Use /cvrotate <degrees(0-360)> after copying an area with /cvcopy");
+            return new CommandResponse(prefix + ChatColor.RED + "Invalid rotation parameter!" + ChatColor.LIGHT_PURPLE + " Proper Usage: Use /werotate <degrees(0-360)> after copying an area with /wecopy");
         }
 
         //store the rotation integer for usage in paste class

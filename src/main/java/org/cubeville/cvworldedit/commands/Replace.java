@@ -56,7 +56,7 @@ public class Replace extends Command {
     public CommandResponse execute(Player sender, Set<String> set, Map<String, Object> map, List<Object> baseParameters) {
 
         if (baseParameters.size() != 2) {
-            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /cvreplace <sourceblock> <targetblock>");
+            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /wereplace <sourceblock> <targetblock>");
         }
         String sourceBlock = baseParameters.get(0).toString().toLowerCase();
         String targetBlock = baseParameters.get(1).toString().toLowerCase();

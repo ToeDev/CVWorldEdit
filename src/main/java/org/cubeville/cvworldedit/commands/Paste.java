@@ -51,12 +51,12 @@ public class Paste extends Command {
     public CommandResponse execute(Player sender, Set<String> set, Map<String, Object> map, List<Object> baseParameters) {
 
         if (baseParameters.size() > 0) {
-            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: Use /cvpaste after copying an area with /cvcopy");
+            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: Use /wepaste after copying an area with /wecopy");
         }
 
         //Check if the player has copied a selection
         if(pluginCopy.getClipboard(sender) == null) {
-            return new CommandResponse(prefix + ChatColor.RED + "Nothing to paste!" + ChatColor.LIGHT_PURPLE + " Proper Usage: Use /cvpaste after copying an area with /cvcopy");
+            return new CommandResponse(prefix + ChatColor.RED + "Nothing to paste!" + ChatColor.LIGHT_PURPLE + " Proper Usage: Use /wepaste after copying an area with /wecopy");
         }
 
         //Get the players current position and check if the paste location is within their region
