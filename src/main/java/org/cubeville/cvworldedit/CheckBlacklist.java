@@ -1,7 +1,5 @@
 package org.cubeville.cvworldedit;
 
-import org.cubeville.cvworldedit.CVWorldEdit;
-
 import java.util.List;
 
 public class CheckBlacklist {

@@ -28,12 +28,9 @@ import org.cubeville.cvworldedit.CVWorldEdit;
 
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ClearPlot extends Command {
 
-    final private Logger logger;
     final private Plugin plugin;
     final private BukkitScheduler scheduler;
 
@@ -64,7 +61,6 @@ public class ClearPlot extends Command {
         this.taskIDClearList = plugin.getTaskIDClearList();
 
         this.scheduler = plugin.getServer().getScheduler();
-        this.logger = plugin.getLogger();
         this.plugin = plugin;
     }
 
@@ -82,7 +78,7 @@ public class ClearPlot extends Command {
             try {
                 targetRegion = BlockUtils.getWGRegion(sender.getWorld(), baseParameters.get(0).toString());
             } catch (IllegalArgumentException e) {
-                this.logger.log(Level.WARNING, "No region found by the name " + baseParameters.get(0).toString());
+                Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "No region found by the name: " + baseParameters.get(0).toString());
                 return new CommandResponse(prefix + ChatColor.RED + "No region found by the name " + baseParameters.get(0).toString());
             }
             if(targetRegion.volume() != plotVolume) {
@@ -175,7 +171,8 @@ public class ClearPlot extends Command {
                     try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
                         editSession.setBlocks(new CuboidRegion(max, min), Objects.requireNonNull(BlockTypes.AIR).getDefaultState());
                     } catch (MaxChangedBlocksException e) {
-                        logger.log(Level.WARNING, "Unable to replace blocks in selection!");
+                        Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Unable to replace blocks in selection!");
+                        Bukkit.getConsoleSender().sendMessage(prefix + e);
                     }
                 }, (long) clearPlotDelay * i);
                 i++;
@@ -190,7 +187,8 @@ public class ClearPlot extends Command {
                         editSession.setBlocks(new CuboidRegion(max, min), block);
                         if(newY == plotYLevel) editSession.makeWalls(new CuboidRegion(max, min), Objects.requireNonNull(BlockTypes.SEA_LANTERN).getDefaultState());
                     } catch (MaxChangedBlocksException e) {
-                        logger.log(Level.WARNING, "Unable to replace blocks in selection!");
+                        Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Unable to replace blocks in selection!");
+                        Bukkit.getConsoleSender().sendMessage(prefix + e);
                     }
                 }, (long) clearPlotDelay * i);
                 i++;
@@ -237,7 +235,8 @@ public class ClearPlot extends Command {
                     try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
                         editSession.setBlocks(new CuboidRegion(max, min), Objects.requireNonNull(BlockTypes.AIR).getDefaultState());
                     } catch (MaxChangedBlocksException e) {
-                        logger.log(Level.WARNING, "Unable to replace blocks in selection!");
+                        Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Unable to replace blocks in selection!");
+                        Bukkit.getConsoleSender().sendMessage(prefix + e);
                     }
                 }, (long) clearPlotDelay * i);
                 i++;
@@ -252,7 +251,8 @@ public class ClearPlot extends Command {
                         editSession.setBlocks(new CuboidRegion(max, min), block);
                         if(newY == plotYLevel) editSession.makeWalls(new CuboidRegion(max, min), Objects.requireNonNull(BlockTypes.SEA_LANTERN).getDefaultState());
                     } catch (MaxChangedBlocksException e) {
-                        logger.log(Level.WARNING, "Unable to replace blocks in selection!");
+                        Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Unable to replace blocks in selection!");
+                        Bukkit.getConsoleSender().sendMessage(prefix + e);
                     }
                 }, (long) clearPlotDelay * i);
                 i++;

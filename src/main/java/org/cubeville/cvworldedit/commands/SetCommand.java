@@ -5,6 +5,7 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.block.BlockTypes;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.*;
@@ -18,12 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class SetCommand extends Command {
-
-    final private Logger logger;
 
     final private CVWorldEdit plugin;
     final private CheckBlacklist pluginBlacklist;
@@ -42,8 +39,6 @@ public class SetCommand extends Command {
         this.pluginBlacklist = pluginBlacklist;
         this.pluginCheckRegion = pluginCheckRegion;
         this.pluginCommandCooldown = pluginCommandCooldown;
-
-        this.logger = plugin.getLogger();
     }
 
     @Override
@@ -68,7 +63,7 @@ public class SetCommand extends Command {
         try {
             playerSelection = WorldEdit.getInstance().getSessionManager().get(bPlayer).getSelection(bPlayer.getWorld());
         } catch (IncompleteRegionException e) {
-            this.logger.log(Level.WARNING, "Unable to get players WE selection");
+            Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "Players selection returned null! (did they make a selection?)");
             return new CommandResponse(prefix + ChatColor.RED + "You haven't made a selection yet!");
         }
 
@@ -99,7 +94,7 @@ public class SetCommand extends Command {
             blocksChanged = editSession.setBlocks(playerSelection, Objects.requireNonNull(BlockTypes.get(targetBlock)).getDefaultState());
             localSession.remember(editSession);
         } catch (Exception e) {
-            this.logger.log(Level.WARNING, "Unable to replace blocks in selection!");
+            Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "Unable to replace blocks in selection! (did volume exceed allowed amount?)");
             return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + targetBlock);
         }
         return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Setting " + blocksChanged + " " + targetBlock.toUpperCase());

@@ -12,6 +12,7 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.*;
@@ -22,12 +23,8 @@ import org.cubeville.cvworldedit.CheckRegion;
 
 
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Copy extends Command {
-
-    final private Logger logger;
 
     final private CVWorldEdit plugin;
     final private CheckBlacklist pluginBlacklist;
@@ -50,8 +47,6 @@ public class Copy extends Command {
         this.plugin = plugin;
         this.clipboardList = plugin.getClipboardList();
         this.blocksCopiedList = plugin.getBlocksCopiedList();
-
-        this.logger = plugin.getLogger();
     }
 
     @Override
@@ -67,7 +62,7 @@ public class Copy extends Command {
             region = BlockUtils.getWESelection(sender);
         }
         catch (IllegalArgumentException e) {
-            this.logger.log(Level.WARNING, "Players selection returned null");
+            Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "Players selection returned null! (did they make a selection?)");
             return new CommandResponse(prefix + ChatColor.RED + "You haven't made a selection yet!");
         }
         if(!(region instanceof CuboidRegion)) {
@@ -110,7 +105,8 @@ public class Copy extends Command {
             }
         }
         catch (WorldEditException e) {
-            this.logger.log(Level.WARNING, "Unable to copy players selection to clipboard!");
+            Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Unable to copy players selection to clipboard!");
+            Bukkit.getConsoleSender().sendMessage(prefix + e);
             return new CommandResponse(prefix + ChatColor.RED + "Unable to copy selection to clipboard! Contact administrator!");
         }
 
@@ -129,9 +125,7 @@ public class Copy extends Command {
     }
 
     public void clearClipboard(Player sender) {
-        if(clipboardList.containsKey(sender.getUniqueId())) {
-            clipboardList.remove(sender.getUniqueId());
-        }
+        clipboardList.remove(sender.getUniqueId());
     }
 
     public int getBlocksCopied(Player sender) {

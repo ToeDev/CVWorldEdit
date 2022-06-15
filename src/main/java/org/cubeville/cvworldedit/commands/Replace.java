@@ -12,6 +12,7 @@ import com.sk89q.worldedit.function.pattern.Pattern;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BlockTypes;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import org.bukkit.entity.Player;
@@ -23,12 +24,8 @@ import org.cubeville.cvworldedit.CommandCooldown;
 
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Replace extends Command {
-
-    final private Logger logger;
 
     final private CVWorldEdit plugin;
     final private CommandCooldown pluginCommandCooldown;
@@ -48,8 +45,6 @@ public class Replace extends Command {
         this.pluginCommandCooldown = pluginCommandCooldown;
         this.pluginBlacklist = pluginBlacklist;
         this.pluginCheckRegion = pluginCheckRegion;
-
-        this.logger = plugin.getLogger();
     }
 
     @Override
@@ -78,7 +73,7 @@ public class Replace extends Command {
         try {
             playerSelection = WorldEdit.getInstance().getSessionManager().get(bPlayer).getSelection(bPlayer.getWorld());
         } catch (IncompleteRegionException e) {
-            this.logger.log(Level.WARNING, "Unable to get players WE selection", e);
+            Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "Players selection returned null! (did they make a selection?)");
             return new CommandResponse(prefix + ChatColor.RED + "You haven't made a selection yet!");
         }
 
@@ -102,7 +97,8 @@ public class Replace extends Command {
         try {
             to = WorldEdit.getInstance().getPatternFactory().parseFromInput(targetBlock, parserContext);
         } catch (InputParseException e) {
-            this.logger.log(Level.WARNING, "Unable to get pattern from targetBlock", e);
+            Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Unable to get pattern from the targetBlock!");
+            Bukkit.getConsoleSender().sendMessage(prefix + e);
             return new CommandResponse(prefix + ChatColor.RED + "Unable to use target block! Contact administrator!");
         }
 
@@ -132,7 +128,7 @@ public class Replace extends Command {
             blocksChanged = editSession.replaceBlocks(playerSelection, from, to);
             localSession.remember(editSession);
         } catch (Exception e) {
-            this.logger.log(Level.WARNING, "Unable to replace blocks in selection!");
+            Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "Unable to replace blocks in selection! (did volume exceed allowed amount?)");
             return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + targetBlock);
         }
         return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Replacing " + blocksChanged + " " + sourceBlock.toUpperCase() + " with " + targetBlock.toUpperCase());

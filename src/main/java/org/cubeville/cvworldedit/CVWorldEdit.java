@@ -15,6 +15,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -22,6 +23,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.cubeville.commons.commands.CommandParser;
@@ -33,11 +35,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class CVWorldEdit extends JavaPlugin implements Listener {
 
-    private Logger logger;
 
     private String prefix;
     private List<String> blockBlacklist;
@@ -80,7 +80,8 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        this.logger = getLogger();
+        this.prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + "CVWorldEdit" + ChatColor.GRAY + "]" + " ";
+        ConsoleCommandSender console = Bukkit.getConsoleSender();
 
         final File dataDir = getDataFolder();
         if(!dataDir.exists()) {
@@ -100,12 +101,11 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
                 fileOutputStream.flush();
                 fileOutputStream.close();
             } catch(IOException e) {
-                logger.log(Level.WARNING, ChatColor.LIGHT_PURPLE + "Unable to generate config file", e);
+                console.sendMessage(this.prefix + ChatColor.RED + "Unable to generate config file");
                 throw new RuntimeException(ChatColor.LIGHT_PURPLE + "Unable to generate config file", e);
             }
         }
 
-        this.prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + "CVWorldEdit" + ChatColor.GRAY + "]" + " ";
         this.rotationYList = new HashMap<>();
         this.commandCooldownList = new HashMap<>();
         this.taskIDCheckList = new HashMap<>();
@@ -120,24 +120,25 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
             mainConfig.load(configFile);
             for(String block : mainConfig.getStringList("Block-Blacklist")) {
                 blockBlacklist.add(block);
-                logger.log(Level.INFO, ChatColor.GOLD + block + ChatColor.LIGHT_PURPLE + " loaded from blacklist");
+                console.sendMessage(this.prefix + ChatColor.GOLD + block + ChatColor.LIGHT_PURPLE + " loaded from blacklist");
             }
             for(String entity : mainConfig.getStringList("Plot-Clear-Entity")) {
                 clearPlotEntityList.add(entity);
-                logger.log(Level.INFO, ChatColor.GOLD + entity + ChatColor.LIGHT_PURPLE + " loaded from plotclear entity list");
+                console.sendMessage(this.prefix + ChatColor.GOLD + entity + ChatColor.LIGHT_PURPLE + " loaded from plotclear entity list");
             }
             commandCooldown = mainConfig.getDouble("Command-Cooldown");
-            logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Command Cooldown loaded from config: " + ChatColor.GOLD + commandCooldown);
+            console.sendMessage(this.prefix + ChatColor.LIGHT_PURPLE + "Command Cooldown loaded from config: " + ChatColor.GOLD + commandCooldown);
             blockVolumeLimit = mainConfig.getInt("Block-Volume-Limit");
-            logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Block Volume Limit loaded from config: " + ChatColor.GOLD + blockVolumeLimit);
+            console.sendMessage(this.prefix + ChatColor.LIGHT_PURPLE + "Block Volume Limit loaded from config: " + ChatColor.GOLD + blockVolumeLimit);
             clearPlotVolume = mainConfig.getInt("Plot-Clear-Volume");
-            logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Plot Block Volume loaded from config: " + ChatColor.GOLD + clearPlotVolume);
+            console.sendMessage(this.prefix + ChatColor.LIGHT_PURPLE + "Plot Block Volume loaded from config: " + ChatColor.GOLD + clearPlotVolume);
             plotYLevel = mainConfig.getInt("Plot-Y-Level");
-            logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Plot Y-Level loaded from config: " + ChatColor.GOLD + plotYLevel);
+            console.sendMessage(this.prefix + ChatColor.LIGHT_PURPLE + "Plot Y-Level loaded from config: " + ChatColor.GOLD + plotYLevel);
             clearPlotRunningLimit = mainConfig.getInt("Plot-Clears-Running-At-A-Time");
-            logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Plot-Clears-Running-At-A-Time loaded from config: " + ChatColor.GOLD + clearPlotRunningLimit);
+            console.sendMessage(this.prefix + ChatColor.LIGHT_PURPLE + "Plot-Clears-Running-At-A-Time loaded from config: " + ChatColor.GOLD + clearPlotRunningLimit);
         } catch(IOException | InvalidConfigurationException e) {
-            logger.log(Level.WARNING, ChatColor.LIGHT_PURPLE + "Unable to load config file", e);
+            console.sendMessage(this.prefix + ChatColor.RED + "Unable to load config file");
+            console.sendMessage(this.prefix + e);
         }
 
         helpParser = new CommandParser();
@@ -189,7 +190,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         selectionParser.addCommand(new Selection(this));
         Bukkit.getPluginManager().registerEvents(this, this);
 
-        logger.info(ChatColor.LIGHT_PURPLE + "Plugin Enabled Successfully");
+        console.sendMessage(this.prefix + ChatColor.LIGHT_PURPLE + "Plugin Enabled Successfully");
     }
 
     public String getPrefix() {
@@ -254,6 +255,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onNetheriteHoeClick(final PlayerInteractEvent event) {
+        if(Objects.equals(event.getHand(), EquipmentSlot.OFF_HAND)) return;
         if(!event.getPlayer().getInventory().getItemInMainHand().equals(new ItemStack(Material.NETHERITE_HOE))) {
             return;
         }
@@ -354,6 +356,6 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        logger.info(ChatColor.LIGHT_PURPLE + "Plugin Disabled Successfully");
+        Bukkit.getConsoleSender().sendMessage(this.prefix + ChatColor.LIGHT_PURPLE + "Plugin Disabled Successfully");
     }
 }

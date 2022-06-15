@@ -11,6 +11,7 @@ import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.session.ClipboardHolder;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.*;
@@ -22,8 +23,6 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Paste extends Command {
 
@@ -31,7 +30,6 @@ public class Paste extends Command {
     final private CommandCooldown pluginCommandCooldown;
     final private Copy pluginCopy;
     final private Rotate pluginRotate;
-    final private Logger logger;
 
     final private String prefix;
 
@@ -44,7 +42,6 @@ public class Paste extends Command {
         this.pluginCommandCooldown = pluginCommandCooldown;
         this.pluginCopy = pluginCopy;
         this.pluginRotate = pluginRotate;
-        this.logger = plugin.getLogger();
     }
 
     @Override
@@ -95,7 +92,8 @@ public class Paste extends Command {
             localSession.remember(editSession);
         }
         catch (WorldEditException e) {
-            this.logger.log(Level.WARNING, "Unable to paste players clipboard!");
+            Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Unable to paste players clipboard!");
+            Bukkit.getConsoleSender().sendMessage(prefix + e);
             return new CommandResponse(prefix + ChatColor.RED + "Unable to paste clipboard! Contact administrator!");
         }
 

@@ -7,6 +7,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionOperationException;
 import com.sk89q.worldedit.util.Direction;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.*;
@@ -18,12 +19,8 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Move extends Command {
-
-    final private Logger logger;
 
     final private CVWorldEdit plugin;
     final private CheckRegion pluginCheckRegion;
@@ -41,8 +38,6 @@ public class Move extends Command {
         this.plugin = plugin;
         this.pluginCheckRegion = pluginCheckRegion;
         this.pluginCommandCooldown = pluginCommandCooldown;
-
-        this.logger = plugin.getLogger();
     }
 
     @Override
@@ -62,7 +57,7 @@ public class Move extends Command {
         try {
             playerSelection = WorldEdit.getInstance().getSessionManager().get(bPlayer).getSelection(bPlayer.getWorld());
         } catch (IncompleteRegionException e) {
-            this.logger.log(Level.WARNING, "Unable to get players WE selection");
+            Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "Players selection returned null! (did they make a selection?)");
             return new CommandResponse(prefix + ChatColor.RED + "You haven't made a selection yet!");
         }
 
@@ -155,7 +150,8 @@ public class Move extends Command {
                     ((isPositive) ? y : -y),
                     ((isPositive) ? z : -z)));
         } catch (RegionOperationException e) {
-            this.logger.log(Level.WARNING, "Unable to expand region/selection");
+            Bukkit.getConsoleSender().sendMessage(prefix +  ChatColor.RED + "Unable to expand region/selection!");
+            Bukkit.getConsoleSender().sendMessage(prefix + e);
             return new CommandResponse(prefix + ChatColor.RED + "Unable to expand region/selection! Contact Administrator!");
         }
         if(!pluginCheckRegion.isOwner(bPlayer, newPlayerSelection)) {
@@ -187,7 +183,8 @@ public class Move extends Command {
                     ((isPositive) ? z : -z)),
                     1, false, null);
         } catch (MaxChangedBlocksException e) {
-            this.logger.log(Level.WARNING, "Unable to replace blocks in selection!", e);
+            Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Unable to replace blocks in selection!");
+            Bukkit.getConsoleSender().sendMessage(prefix + e);
             return new CommandResponse(prefix + ChatColor.RED + "Unable to replace blocks in selection! Contact administrator!");
         }
         return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Moving " + blocksChanged + " blocks.");

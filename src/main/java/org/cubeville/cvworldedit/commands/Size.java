@@ -7,6 +7,7 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.Command;
@@ -16,12 +17,8 @@ import org.cubeville.cvworldedit.CVWorldEdit;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Size extends Command {
-
-    final private Logger logger;
 
     final private String prefix;
 
@@ -29,8 +26,6 @@ public class Size extends Command {
         super("");
 
         prefix = plugin.getPrefix();
-
-        this.logger = plugin.getLogger();
     }
 
     @Override
@@ -47,7 +42,7 @@ public class Size extends Command {
         try {
             playerSelection = localSession.getSelection(bPlayer.getWorld());
         } catch (IncompleteRegionException e) {
-            this.logger.log(Level.WARNING, "Players selection returned null", e);
+            Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "Players selection returned null! (did they make a selection?)");
             return new CommandResponse(prefix + ChatColor.RED + "You haven't made a selection yet!");
         }
         long selVol = playerSelection.getVolume();
