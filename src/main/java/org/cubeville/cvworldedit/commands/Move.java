@@ -142,6 +142,11 @@ public class Move extends Command {
                 return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /weexpand <number> <direction>", ChatColor.LIGHT_PURPLE + "Example: /weexpand 5 north");
         }
 
+        //Check if the player's selection is larger than the max block volume limit
+        if(plugin.getBlockVolumeLimit() < playerSelection.getVolume()) {
+            return new CommandResponse(prefix + ChatColor.RED + "Your selection is too large! (" + ChatColor.GOLD + playerSelection.getVolume() + ChatColor.RED + ")" +  " The maximum block count per command is " + ChatColor.GOLD + plugin.getBlockVolumeLimit());
+        }
+
         //Check if the player's selection plus movement is in a region they are owner of
         Region newPlayerSelection = playerSelection.clone();
         try {
@@ -156,11 +161,6 @@ public class Move extends Command {
         }
         if(!pluginCheckRegion.isOwner(bPlayer, newPlayerSelection)) {
             return new CommandResponse(prefix + ChatColor.RED + "You cannot WorldEdit outside your plot! Please alter your selection!");
-        }
-
-        //Check if the player's selection is larger than the max block volume limit
-        if(plugin.getBlockVolumeLimit() < playerSelection.getVolume()) {
-            return new CommandResponse(prefix + ChatColor.RED + "Your selection is too large! (" + ChatColor.GOLD + playerSelection.getVolume() + ChatColor.RED + ")" +  " The maximum block count per command is " + ChatColor.GOLD + plugin.getBlockVolumeLimit());
         }
 
         //Check if the player is on command cooldown check the CVWorldEditCommandCooldown class

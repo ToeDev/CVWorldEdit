@@ -69,11 +69,6 @@ public class Faces extends Command {
             return new CommandResponse(prefix + ChatColor.RED + "You haven't made a selection yet!");
         }
 
-        //Check if the player's selection is in a region they are owner of
-        if(!pluginCheckRegion.isOwner(bPlayer, playerSelection)) {
-            return new CommandResponse(prefix + ChatColor.RED + "You cannot WorldEdit outside your plot! Please alter your selection!");
-        }
-
         //Check if the player's selection is larger than the max block volume limit
         int length = playerSelection.getLength();
         int width = playerSelection.getWidth();
@@ -82,6 +77,11 @@ public class Faces extends Command {
         int floorCeiling = (((length - 2) * (width - 2)) * 2);
         if(plugin.getBlockVolumeLimit() < walls + floorCeiling) {
             return new CommandResponse(prefix + ChatColor.RED + "Your requested edit is too large! (" + ChatColor.GOLD + (walls + floorCeiling) + ChatColor.RED + ")" +  " The maximum block count per command is " + ChatColor.GOLD + plugin.getBlockVolumeLimit());
+        }
+
+        //Check if the player's selection is in a region they are owner of
+        if(!pluginCheckRegion.isOwner(bPlayer, playerSelection)) {
+            return new CommandResponse(prefix + ChatColor.RED + "You cannot WorldEdit outside your plot! Please alter your selection!");
         }
 
         //Check if the player is on command cooldown check the CVWorldEditCommandCooldown class
