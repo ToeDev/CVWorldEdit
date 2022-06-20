@@ -18,6 +18,7 @@ import org.cubeville.commons.commands.*;
 import org.cubeville.cvworldedit.CVWorldEdit;
 import org.cubeville.cvworldedit.CheckRegion;
 import org.cubeville.cvworldedit.CommandCooldown;
+import org.cubeville.cvworldedit.PlayerClipboard;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -28,20 +29,20 @@ public class Paste extends Command {
 
     final private CheckRegion pluginCheckRegion;
     final private CommandCooldown pluginCommandCooldown;
-    final private Copy pluginCopy;
     final private Rotate pluginRotate;
+    final private PlayerClipboard pluginPlayerClipboard;
 
     final private String prefix;
 
-    public Paste(CVWorldEdit plugin, Copy pluginCopy, Rotate pluginRotate, CheckRegion pluginCheckRegion, CommandCooldown pluginCommandCooldown) {
+    public Paste(CVWorldEdit plugin, PlayerClipboard pluginPlayerClipboard, Rotate pluginRotate, CheckRegion pluginCheckRegion, CommandCooldown pluginCommandCooldown) {
         super("");
 
         prefix = plugin.getPrefix();
 
         this.pluginCheckRegion = pluginCheckRegion;
         this.pluginCommandCooldown = pluginCommandCooldown;
-        this.pluginCopy = pluginCopy;
         this.pluginRotate = pluginRotate;
+        this.pluginPlayerClipboard = pluginPlayerClipboard;
     }
 
     @Override
@@ -52,8 +53,8 @@ public class Paste extends Command {
         }
 
         //Check if the player has copied a selection
-        if(pluginCopy.getClipboard(sender) == null) {
-            return new CommandResponse(prefix + ChatColor.RED + "Nothing to paste!" + ChatColor.LIGHT_PURPLE + " Proper Usage: Use /wepaste after copying an area with /wecopy");
+        if(pluginPlayerClipboard.getClipboard(sender.getUniqueId()) == null) {
+            return new CommandResponse(prefix + ChatColor.RED + "Nothing to paste!" + ChatColor.LIGHT_PURPLE + " Proper Usage: Use /wepaste after copying an area with /wecopy or cutting an area with /wecut");
         }
 
         //Get the players current position and check if the paste location is within their region
@@ -62,8 +63,8 @@ public class Paste extends Command {
         int x = bPlayer.getLocation().getBlockX();
         int y = bPlayer.getLocation().getBlockY();
         int z = bPlayer.getLocation().getBlockZ();
-        BlockArrayClipboard clipboard = pluginCopy.getClipboard(sender);
-        ClipboardHolder holder = new ClipboardHolder(pluginCopy.getClipboard(sender));
+        BlockArrayClipboard clipboard = pluginPlayerClipboard.getClipboard(sender.getUniqueId());
+        ClipboardHolder holder = new ClipboardHolder(pluginPlayerClipboard.getClipboard(sender.getUniqueId()));
         int rotation = pluginRotate.getRotation(sender);
         AffineTransform transform = new AffineTransform().rotateY(-rotation);
         holder.setTransform(holder.getTransform().combine(transform));
@@ -97,6 +98,6 @@ public class Paste extends Command {
             return new CommandResponse(prefix + ChatColor.RED + "Unable to paste clipboard! Contact administrator!");
         }
 
-        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Pasted " + pluginCopy.getBlocksCopied(sender) + " blocks.");
+        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Pasted " + pluginPlayerClipboard.getBlocksCopied(sender.getUniqueId()) + " blocks.");
     }
 }

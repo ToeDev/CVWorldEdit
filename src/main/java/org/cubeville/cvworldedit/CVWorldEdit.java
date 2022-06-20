@@ -52,8 +52,6 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
     private HashMap<UUID, Double> commandCooldownList;
     private HashMap<UUID, Integer> taskIDCheckList;
     private HashMap<UUID, Integer> taskIDClearList;
-    private HashMap<UUID, BlockArrayClipboard> clipboardList;
-    private HashMap<UUID, Integer> blocksCopiedList;
     private HashMap<UUID, Integer> rotationYList;
 
     private CommandParser helpParser;
@@ -63,6 +61,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
     private CommandParser facesParser;
     private CommandParser replaceParser;
     private CommandParser moveParser;
+    private CommandParser cutParser;
     private CommandParser copyParser;
     private CommandParser pasteParser;
     private CommandParser rotateParser;
@@ -112,8 +111,6 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         this.commandCooldownList = new HashMap<>();
         this.taskIDCheckList = new HashMap<>();
         this.taskIDClearList = new HashMap<>();
-        this.clipboardList = new HashMap<>();
-        this.blocksCopiedList = new HashMap<>();
         this.blockBlacklist = new ArrayList<>();
         this.clearPlotEntityList = new ArrayList<>();
         this.clearPlotRunningList = new HashMap<>();
@@ -161,13 +158,17 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         replaceParser.addCommand(new Replace(this, pluginBlacklist, pluginCheckRegion, pluginCommandCooldown));
         moveParser = new CommandParser();
         moveParser.addCommand(new Move(this, pluginCheckRegion, pluginCommandCooldown));
+        PlayerClipboard pluginPlayerClipboard = new PlayerClipboard();
+        cutParser = new CommandParser();
+        Cut cutCommand = new Cut(this, pluginPlayerClipboard, pluginRotate, pluginBlacklist, pluginCheckRegion);
+        cutParser.addCommand(cutCommand);
         copyParser = new CommandParser();
-        Copy copyCommand = new Copy(this, pluginRotate, pluginBlacklist, pluginCheckRegion);
+        Copy copyCommand = new Copy(this, pluginPlayerClipboard, pluginRotate, pluginBlacklist, pluginCheckRegion);
         copyParser.addCommand(copyCommand);
         rotateParser = new CommandParser();
         rotateParser.addCommand(new Rotate(this));
         pasteParser = new CommandParser();
-        pasteParser.addCommand(new Paste(this, copyCommand, pluginRotate, pluginCheckRegion, pluginCommandCooldown));
+        pasteParser.addCommand(new Paste(this, pluginPlayerClipboard, pluginRotate, pluginCheckRegion, pluginCommandCooldown));
         undoParser = new CommandParser();
         undoParser.addCommand(new Undo(this, pluginCommandCooldown));
         redoParser = new CommandParser();
@@ -175,7 +176,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         clearHistoryParser = new CommandParser();
         clearHistoryParser.addCommand(new ClearHistory(this));
         clearClipboardParser = new CommandParser();
-        clearClipboardParser.addCommand(new ClearClipboard(this, copyCommand));
+        clearClipboardParser.addCommand(new ClearClipboard(this, pluginPlayerClipboard));
         pos1Parser = new CommandParser();
         pos1Parser.addCommand(new Pos1(this));
         pos2Parser = new CommandParser();
@@ -249,14 +250,6 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
 
     public HashMap<UUID, Integer> getTaskIDClearList() {
         return this.taskIDClearList;
-    }
-
-    public HashMap<UUID, BlockArrayClipboard> getClipboardList() {
-        return this.clipboardList;
-    }
-
-    public HashMap<UUID, Integer> getBlocksCopiedList() {
-        return this.blocksCopiedList;
     }
 
     @EventHandler
@@ -345,6 +338,8 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
                 return replaceParser.execute(sender, args);
             case "cvmove":
                 return moveParser.execute(sender, args);
+            case "cvcut":
+                return cutParser.execute(sender, args);
             case "cvcopy":
                 return copyParser.execute(sender, args);
             case "cvpaste":

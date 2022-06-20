@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.Command;
 import org.cubeville.commons.commands.CommandResponse;
 import org.cubeville.cvworldedit.CVWorldEdit;
+import org.cubeville.cvworldedit.PlayerClipboard;
 
 import java.util.List;
 import java.util.Map;
@@ -12,14 +13,14 @@ import java.util.Set;
 
 public class ClearClipboard extends Command {
 
-    final private Copy pluginCopy;
+    final private PlayerClipboard pluginPlayerClipboard;
 
     final private String prefix;
 
-    public ClearClipboard(CVWorldEdit plugin, Copy pluginCopy) {
+    public ClearClipboard(CVWorldEdit plugin, PlayerClipboard pluginPlayerClipboard) {
         super("");
 
-        this.pluginCopy = pluginCopy;
+        this.pluginPlayerClipboard = pluginPlayerClipboard;
 
         prefix = plugin.getPrefix();
     }
@@ -32,7 +33,8 @@ public class ClearClipboard extends Command {
         }
 
         //Clear a players clipboard (can't paste after this)
-        pluginCopy.clearClipboard(sender);
+        pluginPlayerClipboard.clearClipboard(sender.getUniqueId());
+        pluginPlayerClipboard.clearBlocksCopied(sender.getUniqueId());
 
         return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Clipboard cleared!");
     }

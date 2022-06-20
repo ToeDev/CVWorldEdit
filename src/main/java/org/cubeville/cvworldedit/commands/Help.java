@@ -18,6 +18,7 @@ public class Help extends Command {
     final private String cvcontract;
     final private String cvsel;
     final private String cvsize;
+    final private String cvcut;
     final private String cvcopy;
     final private String cvpaste;
     final private String cvrotate;
@@ -42,6 +43,7 @@ public class Help extends Command {
         cvcontract = ChatColor.GOLD + "/wecontract <number> <direction>" + ChatColor.LIGHT_PURPLE + " - Contract your selection in a direction";
         cvsel = ChatColor.GOLD + "/wesel" + ChatColor.LIGHT_PURPLE + " - Clear your current selection";
         cvsize = ChatColor.GOLD + "/wesize" + ChatColor.LIGHT_PURPLE + " - List your current selection's size and dimensions";
+        cvcut = ChatColor.GOLD + "/wecut" + ChatColor.LIGHT_PURPLE + " - Copy your current selection to the clipboard then delete it";
         cvcopy = ChatColor.GOLD + "/wecopy" + ChatColor.LIGHT_PURPLE + " - Copy your current selection to the clipboard";
         cvpaste = ChatColor.GOLD + "/wepaste" + ChatColor.LIGHT_PURPLE + " - Pastes your current clipboard where you're standing";
         cvrotate = ChatColor.GOLD + "/werotate <degrees>" + ChatColor.LIGHT_PURPLE + " - Rotates your clipboard on the Y axis";
@@ -65,6 +67,6 @@ public class Help extends Command {
         }
 
         //Send Command info to player
-        return new CommandResponse(cvwand, cvpos, cvhpos, cvexpand, cvcontract, cvsel, cvsize, cvcopy, cvpaste, cvrotate, cvmove, cvset, cvreplace, cvwalls, cvfaces, cvundo, cvredo, cvclearhistory, cvclearclipboard, cvclearplot);
+        return new CommandResponse(cvwand, cvpos, cvhpos, cvexpand, cvcontract, cvsel, cvsize, cvcut, cvcopy, cvpaste, cvrotate, cvmove, cvset, cvreplace, cvwalls, cvfaces, cvundo, cvredo, cvclearhistory, cvclearclipboard, cvclearplot);
     }
 }

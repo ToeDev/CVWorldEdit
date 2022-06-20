@@ -12,6 +12,7 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.world.block.BlockTypes;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -25,7 +26,7 @@ import org.cubeville.cvworldedit.PlayerClipboard;
 
 import java.util.*;
 
-public class Copy extends Command {
+public class Cut extends Command {
 
     final private CVWorldEdit plugin;
     final private CheckBlacklist pluginBlacklist;
@@ -35,7 +36,7 @@ public class Copy extends Command {
 
     final private String prefix;
 
-    public Copy(CVWorldEdit plugin, PlayerClipboard pluginPlayerClipboard, Rotate pluginRotate, CheckBlacklist pluginBlacklist, CheckRegion pluginCheckRegion) {
+    public Cut(CVWorldEdit plugin, PlayerClipboard pluginPlayerClipboard, Rotate pluginRotate, CheckBlacklist pluginBlacklist, CheckRegion pluginCheckRegion) {
         super("");
 
         prefix = plugin.getPrefix();
@@ -50,7 +51,7 @@ public class Copy extends Command {
     @Override
     public CommandResponse execute(Player sender, Set<String> set, Map<String, Object> map, List<Object> baseParameters) {
         if (baseParameters.size() > 0) {
-            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: Select an area then use /wecopy");
+            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: Select an area then use /wecut");
         }
 
         //Check if player has a cuboid selection made
@@ -76,7 +77,7 @@ public class Copy extends Command {
         for(BlockVector3 vec : region) {
             String block = bPlayer.getExtent().getBlock(vec).getBlockType().toString().toLowerCase().substring(10);
             if(pluginBlacklist.checkBlockBanned(block)) {
-                return new CommandResponse(prefix + ChatColor.RED + "You cannot copy the following block with WorldEdit! " + ChatColor.GOLD + block);
+                return new CommandResponse(prefix + ChatColor.RED + "You cannot cut the following block with WorldEdit! " + ChatColor.GOLD + block);
             }
         }
 
@@ -106,6 +107,15 @@ public class Copy extends Command {
             Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Unable to copy players selection to clipboard!");
             Bukkit.getConsoleSender().sendMessage(prefix + e);
             return new CommandResponse(prefix + ChatColor.RED + "Unable to copy selection to clipboard! Contact administrator!");
+        }
+
+        //Set the players selection to air
+        try (EditSession editSession = localSession.createEditSession(bPlayer)) {
+            editSession.setBlocks(playerSelection, Objects.requireNonNull(BlockTypes.AIR).getDefaultState());
+            localSession.remember(editSession);
+        } catch (Exception e) {
+            Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "Unable to replace blocks in selection! (did volume exceed allowed amount?)");
+            return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD);
         }
 
         return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Copied " + pluginPlayerClipboard.getBlocksCopied(sender.getUniqueId()) + " blocks.");

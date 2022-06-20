@@ -39,6 +39,9 @@ commands:
   cvsize:
     aliases: wesize
     permission: CVWorldEdit.selection.commands
+  cvcut:
+    aliases: wecut
+    permission: CVWorldEdit.execute.commands
   cvcopy:
     aliases: wecopy
     permission: CVWorldEdit.execute.commands
