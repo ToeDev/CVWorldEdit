@@ -30,8 +30,8 @@ public class Move extends Command {
 
     public Move(CVWorldEdit plugin, CheckRegion pluginCheckRegion, CommandCooldown pluginCommandCooldown) {
         super("");
-        addBaseParameter(new CommandParameterString()); //number of blocks to move
-        addBaseParameter(new CommandParameterString()); //direction to move
+        addBaseParameter(new CommandParameterInteger()); //number of blocks to move
+        addOptionalBaseParameter(new CommandParameterString()); //direction to move
 
         prefix = plugin.getPrefix();
 
@@ -43,13 +43,18 @@ public class Move extends Command {
     @Override
     public CommandResponse execute(Player sender, Set<String> set, Map<String, Object> map, List<Object> baseParameters) {
 
-        if (baseParameters.size() != 2 || !checkInt(baseParameters.get(0).toString()) || checkInt(baseParameters.get(1).toString())) {
-            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /wemove <number> <direction>", ChatColor.LIGHT_PURPLE + "Example: /wemove 5 north");
+        if (baseParameters.size() > 2) {
+            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /wemove <number> [direction]", ChatColor.LIGHT_PURPLE + "Example: /wemove 5 north");
         }
 
         //Change players args into variables
         final int amount = Integer.parseInt(baseParameters.get(0).toString());
-        final String direction = baseParameters.get(1).toString();
+        final String direction;
+        if(baseParameters.size() > 1) {
+            direction = (String) baseParameters.get(1);
+        } else {
+            direction = plugin.getPlayerFacing(sender);
+        }
 
         //Check if player has a selection made
         Region playerSelection;
@@ -139,7 +144,7 @@ public class Move extends Command {
                 }
                 return new CommandResponse(prefix + ChatColor.RED + "Not looking in a specific direction!" + ChatColor.LIGHT_PURPLE + " Ensure you are looking directly North, South, East, or West to use the left or right parameter.");
             default:
-                return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /weexpand <number> <direction>", ChatColor.LIGHT_PURPLE + "Example: /weexpand 5 north");
+                return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /wemove <number> [direction]", ChatColor.LIGHT_PURPLE + "Example: /weexpand 5 north");
         }
 
         //Check if the player's selection is larger than the max block volume limit
@@ -187,16 +192,6 @@ public class Move extends Command {
             Bukkit.getConsoleSender().sendMessage(prefix + e);
             return new CommandResponse(prefix + ChatColor.RED + "Unable to replace blocks in selection! Contact administrator!");
         }
-        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Moving " + blocksChanged + " blocks.");
-    }
-
-    public boolean checkInt(String arg) {
-        try {
-            Integer.parseInt(arg);
-            return true;
-        }
-        catch (NumberFormatException e) {
-            return false;
-        }
+        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Moving " + blocksChanged + " blocks to the " + direction);
     }
 }

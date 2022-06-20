@@ -21,6 +21,7 @@ public class Help extends Command {
     final private String cvcut;
     final private String cvcopy;
     final private String cvpaste;
+    final private String cvflip;
     final private String cvrotate;
     final private String cvmove;
     final private String cvset;
@@ -39,15 +40,16 @@ public class Help extends Command {
         cvwand = ChatColor.GOLD + "/wewand" + ChatColor.LIGHT_PURPLE + " - Give yourself a selection wand";
         cvpos = ChatColor.GOLD + "/wepos1 + /wepos2" + ChatColor.LIGHT_PURPLE + " - Set points of a selection at your location";
         cvhpos = ChatColor.GOLD + "/wehpos1 + /wehpos2" + ChatColor.LIGHT_PURPLE + " - Set points of a selection to the block you're looking at";
-        cvexpand = ChatColor.GOLD + "/weexpand <number> <direction>" + ChatColor.LIGHT_PURPLE + " - Expand your selection in a direction";
-        cvcontract = ChatColor.GOLD + "/wecontract <number> <direction>" + ChatColor.LIGHT_PURPLE + " - Contract your selection in a direction";
+        cvexpand = ChatColor.GOLD + "/weexpand <number> [direction]" + ChatColor.LIGHT_PURPLE + " - Expand your selection in the specified direction or in the direction you're if not specified";
+        cvcontract = ChatColor.GOLD + "/wecontract <number> [direction]" + ChatColor.LIGHT_PURPLE + " - Contract your selection in the specified direction or in the direction you're if not specified";
         cvsel = ChatColor.GOLD + "/wesel" + ChatColor.LIGHT_PURPLE + " - Clear your current selection";
         cvsize = ChatColor.GOLD + "/wesize" + ChatColor.LIGHT_PURPLE + " - List your current selection's size and dimensions";
         cvcut = ChatColor.GOLD + "/wecut" + ChatColor.LIGHT_PURPLE + " - Copy your current selection to the clipboard then delete it";
         cvcopy = ChatColor.GOLD + "/wecopy" + ChatColor.LIGHT_PURPLE + " - Copy your current selection to the clipboard";
         cvpaste = ChatColor.GOLD + "/wepaste" + ChatColor.LIGHT_PURPLE + " - Pastes your current clipboard where you're standing";
-        cvrotate = ChatColor.GOLD + "/werotate <degrees>" + ChatColor.LIGHT_PURPLE + " - Rotates your clipboard on the Y axis";
-        cvmove = ChatColor.GOLD + "/wemove <number> <direction>" + ChatColor.LIGHT_PURPLE + " - Move your selection in a direction";
+        cvflip = ChatColor.GOLD + "/weflip [direction]" + ChatColor.LIGHT_PURPLE + " - Flips your clipboard in the specified direction or in the direction you're if not specified";
+        cvrotate = ChatColor.GOLD + "/werotate <y> [x] [z]" + ChatColor.LIGHT_PURPLE + " - Rotates your clipboard on the y, x, and/or z axis. (y is required)";
+        cvmove = ChatColor.GOLD + "/wemove <number> [direction]" + ChatColor.LIGHT_PURPLE + " - Move your selection in the specified direction or in the direction you're if not specified";
         cvset = ChatColor.GOLD + "/weset <targetBlock>" + ChatColor.LIGHT_PURPLE + " - Sets your current selection to the target block";
         cvreplace = ChatColor.GOLD + "/wereplace <sourceBlock> <targetBlock>" + ChatColor.LIGHT_PURPLE + " - Replaces the source blocks in your selection with the target block";
         cvwalls = ChatColor.GOLD + "/wewalls <targetBlock>" + ChatColor.LIGHT_PURPLE + " - Sets the sides/walls of your current selection to the target block";
@@ -67,6 +69,8 @@ public class Help extends Command {
         }
 
         //Send Command info to player
-        return new CommandResponse(cvwand, cvpos, cvhpos, cvexpand, cvcontract, cvsel, cvsize, cvcut, cvcopy, cvpaste, cvrotate, cvmove, cvset, cvreplace, cvwalls, cvfaces, cvundo, cvredo, cvclearhistory, cvclearclipboard, cvclearplot);
+        return new CommandResponse(cvwand, cvpos, cvhpos, cvexpand, cvcontract, cvsel, cvsize,
+                cvcut, cvcopy, cvpaste, cvflip, cvrotate, cvmove, cvset, cvreplace, cvwalls, cvfaces,
+                cvundo, cvredo, cvclearhistory, cvclearclipboard, cvclearplot);
     }
 }

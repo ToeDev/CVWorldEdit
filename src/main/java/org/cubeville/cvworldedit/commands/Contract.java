@@ -22,26 +22,33 @@ import java.util.Set;
 
 public class Contract extends Command {
 
+    final private CVWorldEdit plugin;
     final private String prefix;
 
     public Contract(CVWorldEdit plugin) {
         super("");
-        addBaseParameter(new CommandParameterString()); //number of blocks to expand
-        addBaseParameter(new CommandParameterString()); //direction to expand
+        addBaseParameter(new CommandParameterInteger()); //number of blocks to expand
+        addOptionalBaseParameter(new CommandParameterString()); //direction to expand
 
-        prefix = plugin.getPrefix();
+        this.plugin = plugin;
+        prefix = this.plugin.getPrefix();
     }
 
     @Override
     public CommandResponse execute(Player sender, Set<String> set, Map<String, Object> map, List<Object> baseParameters) {
 
-        if (baseParameters.size() != 2 || !checkInt(baseParameters.get(0).toString()) || checkInt(baseParameters.get(1).toString())) {
-            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /wecontract <number> <direction>", ChatColor.LIGHT_PURPLE + "Example: /wecontract 5 north");
+        if (baseParameters.size() > 2) {
+            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /wecontract <number> [direction]", ChatColor.LIGHT_PURPLE + "Example: /wecontract 5 north");
         }
 
         //Change players args into variables
         final int amount = Integer.parseInt(baseParameters.get(0).toString());
-        final String direction = baseParameters.get(1).toString();
+        final String direction;
+        if(baseParameters.size() > 1) {
+            direction = (String) baseParameters.get(1);
+        } else {
+            direction = plugin.getPlayerFacing(sender);
+        }
 
         //Get the players session, selector, region, etc
         BukkitPlayer bPlayer = BukkitAdapter.adapt(sender);
@@ -133,7 +140,7 @@ public class Contract extends Command {
                 }
                 return new CommandResponse(prefix + ChatColor.RED + "Not looking in a specific direction!" + ChatColor.LIGHT_PURPLE + " Ensure you are looking directly North, South, East, or West to use the left or right parameter.");
             default:
-                return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /wecontract <number> <direction>", ChatColor.LIGHT_PURPLE + "Example: /wecontract 5 north");
+                return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /wecontract <number> [direction]", ChatColor.LIGHT_PURPLE + "Example: /wecontract 5 north");
         }
 
         //apply region expansion
@@ -153,16 +160,6 @@ public class Contract extends Command {
         selector.explainRegionAdjust(bPlayer, localSession);
         long newSize = playerSelection.getVolume();
 
-        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Selection contracted " + (oldSize - newSize) + " blocks.");
-    }
-
-    public boolean checkInt(String arg) {
-        try {
-            Integer.parseInt(arg);
-            return true;
-        }
-        catch (NumberFormatException e) {
-            return false;
-        }
+        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Selection contracted " + (oldSize - newSize) + " blocks " + direction);
     }
 }

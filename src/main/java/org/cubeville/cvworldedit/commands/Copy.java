@@ -12,6 +12,7 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.session.ClipboardHolder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -20,7 +21,6 @@ import org.cubeville.commons.utils.BlockUtils;
 import org.cubeville.cvworldedit.CVWorldEdit;
 import org.cubeville.cvworldedit.CheckBlacklist;
 import org.cubeville.cvworldedit.CheckRegion;
-import org.cubeville.cvworldedit.PlayerClipboard;
 
 
 import java.util.*;
@@ -30,18 +30,14 @@ public class Copy extends Command {
     final private CVWorldEdit plugin;
     final private CheckBlacklist pluginBlacklist;
     final private CheckRegion pluginCheckRegion;
-    final private Rotate pluginRotate;
-    final private PlayerClipboard pluginPlayerClipboard;
 
     final private String prefix;
 
-    public Copy(CVWorldEdit plugin, PlayerClipboard pluginPlayerClipboard, Rotate pluginRotate, CheckBlacklist pluginBlacklist, CheckRegion pluginCheckRegion) {
+    public Copy(CVWorldEdit plugin, CheckBlacklist pluginBlacklist, CheckRegion pluginCheckRegion) {
         super("");
 
         prefix = plugin.getPrefix();
 
-        this.pluginPlayerClipboard = pluginPlayerClipboard;
-        this.pluginRotate = pluginRotate;
         this.pluginBlacklist = pluginBlacklist;
         this.pluginCheckRegion = pluginCheckRegion;
         this.plugin = plugin;
@@ -95,12 +91,7 @@ public class Copy extends Command {
             forwardExtentCopy.setCopyingBiomes(false);
             clipboard.setOrigin(localSession.getPlacementPosition(bPlayer));
             Operations.complete(forwardExtentCopy);
-            int blocksCopied = forwardExtentCopy.getAffected();
-            pluginPlayerClipboard.saveClipboard(sender.getUniqueId(), clipboard);
-            pluginPlayerClipboard.saveBlocksCopied(sender.getUniqueId(), blocksCopied);
-            if(pluginRotate.getRotation(sender) != 0) {
-                pluginRotate.clearRotation(sender);
-            }
+            localSession.setClipboard(new ClipboardHolder(clipboard));
         }
         catch (WorldEditException e) {
             Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Unable to copy players selection to clipboard!");
@@ -108,6 +99,6 @@ public class Copy extends Command {
             return new CommandResponse(prefix + ChatColor.RED + "Unable to copy selection to clipboard! Contact administrator!");
         }
 
-        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Copied " + pluginPlayerClipboard.getBlocksCopied(sender.getUniqueId()) + " blocks.");
+        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Copied " + clipboard.getRegion().getVolume() + " blocks.");
     }
 }

@@ -51,6 +51,9 @@ commands:
   cvrotate:
     aliases: werotate
     permission: CVWorldEdit.execute.commands
+  cvflip:
+    aliases: weflip
+    permission: CVWorldEdit.execute.commands
   cvset:
     aliases: weset
     permission: CVWorldEdit.execute.commands

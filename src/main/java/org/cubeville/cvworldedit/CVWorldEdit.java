@@ -10,6 +10,7 @@ import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionSelector;
+import com.sk89q.worldedit.util.Direction;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -65,6 +66,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
     private CommandParser copyParser;
     private CommandParser pasteParser;
     private CommandParser rotateParser;
+    private CommandParser flipParser;
     private CommandParser undoParser;
     private CommandParser redoParser;
     private CommandParser clearHistoryParser;
@@ -158,17 +160,18 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         replaceParser.addCommand(new Replace(this, pluginBlacklist, pluginCheckRegion, pluginCommandCooldown));
         moveParser = new CommandParser();
         moveParser.addCommand(new Move(this, pluginCheckRegion, pluginCommandCooldown));
-        PlayerClipboard pluginPlayerClipboard = new PlayerClipboard();
         cutParser = new CommandParser();
-        Cut cutCommand = new Cut(this, pluginPlayerClipboard, pluginRotate, pluginBlacklist, pluginCheckRegion);
+        Cut cutCommand = new Cut(this, pluginBlacklist, pluginCheckRegion);
         cutParser.addCommand(cutCommand);
         copyParser = new CommandParser();
-        Copy copyCommand = new Copy(this, pluginPlayerClipboard, pluginRotate, pluginBlacklist, pluginCheckRegion);
+        Copy copyCommand = new Copy(this, pluginBlacklist, pluginCheckRegion);
         copyParser.addCommand(copyCommand);
+        flipParser = new CommandParser();
+        flipParser.addCommand(new Flip(this));
         rotateParser = new CommandParser();
         rotateParser.addCommand(new Rotate(this));
         pasteParser = new CommandParser();
-        pasteParser.addCommand(new Paste(this, pluginPlayerClipboard, pluginRotate, pluginCheckRegion, pluginCommandCooldown));
+        pasteParser.addCommand(new Paste(this, pluginCheckRegion, pluginCommandCooldown));
         undoParser = new CommandParser();
         undoParser.addCommand(new Undo(this, pluginCommandCooldown));
         redoParser = new CommandParser();
@@ -176,7 +179,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         clearHistoryParser = new CommandParser();
         clearHistoryParser.addCommand(new ClearHistory(this));
         clearClipboardParser = new CommandParser();
-        clearClipboardParser.addCommand(new ClearClipboard(this, pluginPlayerClipboard));
+        clearClipboardParser.addCommand(new ClearClipboard(this));
         pos1Parser = new CommandParser();
         pos1Parser.addCommand(new Pos1(this));
         pos2Parser = new CommandParser();
@@ -250,6 +253,18 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
 
     public HashMap<UUID, Integer> getTaskIDClearList() {
         return this.taskIDClearList;
+    }
+
+    public String getPlayerFacing(Player player) {
+        float yaw = player.getLocation().getYaw();
+        float pitch = player.getLocation().getPitch();
+        if(pitch >= 67) return "down";
+        if(pitch <= -67) return "up";
+        if(yaw < 45 && yaw >= -45) return "south";
+        if(yaw < -45 && yaw >= -135) return "east";
+        if((yaw < -135 && yaw >= -180) || (yaw < 180 && yaw >= 135)) return "north";
+        if(yaw < 135 && yaw >= 45) return "west";
+        return null;
     }
 
     @EventHandler
@@ -344,6 +359,8 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
                 return copyParser.execute(sender, args);
             case "cvpaste":
                 return pasteParser.execute(sender, args);
+            case "cvflip":
+                return flipParser.execute(sender, args);
             case "cvrotate":
                 return rotateParser.execute(sender, args);
             case "cvundo":

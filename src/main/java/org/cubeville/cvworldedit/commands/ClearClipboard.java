@@ -1,11 +1,13 @@
 package org.cubeville.cvworldedit.commands;
 
+import com.sk89q.worldedit.LocalSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.Command;
 import org.cubeville.commons.commands.CommandResponse;
 import org.cubeville.cvworldedit.CVWorldEdit;
-import org.cubeville.cvworldedit.PlayerClipboard;
 
 import java.util.List;
 import java.util.Map;
@@ -13,14 +15,10 @@ import java.util.Set;
 
 public class ClearClipboard extends Command {
 
-    final private PlayerClipboard pluginPlayerClipboard;
-
     final private String prefix;
 
-    public ClearClipboard(CVWorldEdit plugin, PlayerClipboard pluginPlayerClipboard) {
+    public ClearClipboard(CVWorldEdit plugin) {
         super("");
-
-        this.pluginPlayerClipboard = pluginPlayerClipboard;
 
         prefix = plugin.getPrefix();
     }
@@ -33,8 +31,8 @@ public class ClearClipboard extends Command {
         }
 
         //Clear a players clipboard (can't paste after this)
-        pluginPlayerClipboard.clearClipboard(sender.getUniqueId());
-        pluginPlayerClipboard.clearBlocksCopied(sender.getUniqueId());
+        LocalSession localSession = WorldEdit.getInstance().getSessionManager().get(BukkitAdapter.adapt(sender));
+        localSession.setClipboard(null);
 
         return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Clipboard cleared!");
     }
