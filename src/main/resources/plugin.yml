@@ -18,6 +18,12 @@ commands:
   cvpos2:
     aliases: wepos2
     permission: CVWorldEdit.selection.commands
+  cvhpos1:
+    aliases: wehpos1
+    permission: CVWorldEdit.selection.commands
+  cvhpos2:
+    aliases: wehpos2
+    permission: CVWorldEdit.selection.commands
   cvexpand:
     aliases: weexpand
     permission: CVWorldEdit.selection.commands

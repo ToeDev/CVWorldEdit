@@ -72,6 +72,8 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
     private CommandParser clearClipboardParser;
     private CommandParser pos1Parser;
     private CommandParser pos2Parser;
+    private CommandParser hPos1Parser;
+    private CommandParser hPos2Parser;
     private CommandParser wandParser;
     private CommandParser expandParser;
     private CommandParser contractParser;
@@ -178,6 +180,10 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         pos1Parser.addCommand(new Pos1(this));
         pos2Parser = new CommandParser();
         pos2Parser.addCommand(new Pos2(this));
+        hPos1Parser = new CommandParser();
+        hPos1Parser.addCommand(new HPos1(this));
+        hPos2Parser = new CommandParser();
+        hPos2Parser.addCommand(new HPos2(this));
         wandParser = new CommandParser();
         wandParser.addCommand(new Wand(this));
         expandParser = new CommandParser();
@@ -314,6 +320,10 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
                 return pos1Parser.execute(sender, args);
             case "cvpos2":
                 return pos2Parser.execute(sender, args);
+            case "cvhpos1":
+                return hPos1Parser.execute(sender, args);
+            case "cvhpos2":
+                return hPos2Parser.execute(sender, args);
             case "cvwand":
                 return wandParser.execute(sender, args);
             case "cvexpand":

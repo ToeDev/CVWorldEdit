@@ -13,6 +13,7 @@ public class Help extends Command {
 
     final private String cvwand;
     final private String cvpos;
+    final private String cvhpos;
     final private String cvexpand;
     final private String cvcontract;
     final private String cvsel;
@@ -36,6 +37,7 @@ public class Help extends Command {
 
         cvwand = ChatColor.GOLD + "/wewand" + ChatColor.LIGHT_PURPLE + " - Give yourself a selection wand";
         cvpos = ChatColor.GOLD + "/wepos1 + /wepos2" + ChatColor.LIGHT_PURPLE + " - Set points of a selection at your location";
+        cvhpos = ChatColor.GOLD + "/wehpos1 + /wehpos2" + ChatColor.LIGHT_PURPLE + " - Set points of a selection to the block you're looking at";
         cvexpand = ChatColor.GOLD + "/weexpand <number> <direction>" + ChatColor.LIGHT_PURPLE + " - Expand your selection in a direction";
         cvcontract = ChatColor.GOLD + "/wecontract <number> <direction>" + ChatColor.LIGHT_PURPLE + " - Contract your selection in a direction";
         cvsel = ChatColor.GOLD + "/wesel" + ChatColor.LIGHT_PURPLE + " - Clear your current selection";
@@ -63,6 +65,6 @@ public class Help extends Command {
         }
 
         //Send Command info to player
-        return new CommandResponse(cvwand, cvpos, cvexpand, cvcontract, cvsel, cvsize, cvcopy, cvpaste, cvrotate, cvmove, cvset, cvreplace, cvwalls, cvfaces, cvundo, cvredo, cvclearhistory, cvclearclipboard, cvclearplot);
+        return new CommandResponse(cvwand, cvpos, cvhpos, cvexpand, cvcontract, cvsel, cvsize, cvcopy, cvpaste, cvrotate, cvmove, cvset, cvreplace, cvwalls, cvfaces, cvundo, cvredo, cvclearhistory, cvclearclipboard, cvclearplot);
     }
 }
