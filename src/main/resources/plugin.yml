@@ -69,6 +69,9 @@ commands:
   cvreplace:
     aliases: wereplace
     permission: CVWorldEdit.execute.commands
+  cvstack:
+    aliases: westack
+    permission: CVWorldEdit.execute.commands
   cvmove:
     aliases: wemove
     permission: CVWorldEdit.execute.commands

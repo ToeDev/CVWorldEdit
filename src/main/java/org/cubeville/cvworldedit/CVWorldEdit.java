@@ -29,6 +29,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.cubeville.commons.commands.CommandParser;
 import org.cubeville.cvworldedit.commands.*;
+import org.cubeville.cvworldedit.commands.Stack;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -61,6 +62,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
     private CommandParser wallsParser;
     private CommandParser facesParser;
     private CommandParser replaceParser;
+    private CommandParser stackParser;
     private CommandParser moveParser;
     private CommandParser cutParser;
     private CommandParser copyParser;
@@ -159,6 +161,8 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         facesParser.addCommand(new Faces(this, pluginBlacklist, pluginCheckRegion, pluginCommandCooldown));
         replaceParser = new CommandParser();
         replaceParser.addCommand(new Replace(this, pluginBlacklist, pluginCheckRegion, pluginCommandCooldown));
+        stackParser = new CommandParser();
+        stackParser.addCommand(new Stack(this, pluginCheckRegion, pluginCommandCooldown));
         moveParser = new CommandParser();
         moveParser.addCommand(new Move(this, pluginCheckRegion, pluginCommandCooldown));
         cutParser = new CommandParser();
@@ -270,6 +274,22 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         return null;
     }
 
+    public String getPlayerFacingSpecific(Player player) {
+        float yaw = player.getLocation().getYaw();
+        float pitch = player.getLocation().getPitch();
+        if(pitch >= 67) return "down";
+        if(pitch <= -67) return "up";
+        if(yaw < 22.5 && yaw >= -22.5) return "south";
+        if(yaw < -22.5 && yaw >= -67.5) return "southeast";
+        if(yaw < -67.5 && yaw >= -112.5) return "east";
+        if(yaw < -112.5 && yaw >= -157.5) return "northeast";
+        if((yaw < -157.5 && yaw >= -180) || (yaw < 180) && yaw >= 157.5) return "north";
+        if(yaw < 157.5 && yaw >= 112.5) return "northwest";
+        if(yaw < 112.5 && yaw >= 67.5) return "west";
+        if(yaw < 67.5 && yaw >= 22.5) return "southwest";
+        return null;
+    }
+
     @EventHandler
     public void onNetheriteHoeClick(final PlayerInteractEvent event) {
         if(Objects.equals(event.getHand(), EquipmentSlot.OFF_HAND)) return;
@@ -356,6 +376,8 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
                 return facesParser.execute(sender, args);
             case "cvreplace":
                 return replaceParser.execute(sender, args);
+            case "cvstack":
+                return stackParser.execute(sender, args);
             case "cvmove":
                 return moveParser.execute(sender, args);
             case "cvcut":

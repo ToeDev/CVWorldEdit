@@ -3,6 +3,7 @@ package org.cubeville.cvworldedit.commands;
 import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitPlayer;
+import com.sk89q.worldedit.internal.annotation.Offset;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionOperationException;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class Move extends Command {
+public class Stack extends Command {
 
     final private CVWorldEdit plugin;
     final private CheckRegion pluginCheckRegion;
@@ -28,10 +29,10 @@ public class Move extends Command {
 
     final private String prefix;
 
-    public Move(CVWorldEdit plugin, CheckRegion pluginCheckRegion, CommandCooldown pluginCommandCooldown) {
+    public Stack(CVWorldEdit plugin, CheckRegion pluginCheckRegion, CommandCooldown pluginCommandCooldown) {
         super("");
-        addBaseParameter(new CommandParameterInteger()); //number of blocks to move
-        addOptionalBaseParameter(new CommandParameterString()); //direction to move
+        addBaseParameter(new CommandParameterInteger()); //number of blocks to stack
+        addOptionalBaseParameter(new CommandParameterString()); //direction to stack
 
         prefix = plugin.getPrefix();
 
@@ -44,7 +45,7 @@ public class Move extends Command {
     public CommandResponse execute(Player sender, Set<String> set, Map<String, Object> map, List<Object> baseParameters) {
 
         if (baseParameters.size() > 2) {
-            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /wemove <number> [direction]", ChatColor.LIGHT_PURPLE + "Example: /wemove 5 north");
+            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /westack <number> [direction]", ChatColor.LIGHT_PURPLE + "Example: /westack 5 north");
         }
 
         //Change players args into variables
@@ -53,7 +54,8 @@ public class Move extends Command {
         if(baseParameters.size() > 1) {
             direction = (String) baseParameters.get(1);
         } else {
-            direction = plugin.getPlayerFacing(sender);
+            direction = plugin.getPlayerFacingSpecific(sender);
+            sender.sendMessage(direction);
         }
 
         //Check if player has a selection made
@@ -70,7 +72,9 @@ public class Move extends Command {
         int x = 0;
         int y = 0;
         int z = 0;
-        boolean isPositive = true;
+        boolean isPositiveY = true;
+        boolean isPositiveX = true;
+        boolean isPositiveZ = true;
         switch(direction.toLowerCase()) {
             case "up":
             case "u":
@@ -79,21 +83,45 @@ public class Move extends Command {
             case "down":
             case "d":
                 y = amount;
-                isPositive = false;
+                isPositiveY = false;
                 break;
             case "north":
             case "n":
                 z = amount;
-                isPositive = false;
+                isPositiveZ = false;
+                break;
+            case "northwest":
+            case "nw":
+                x = amount;
+                isPositiveX = false;
+                z = amount;
+                isPositiveZ = false;
+                break;
+            case "northeast":
+            case "ne":
+                x = amount;
+                z = amount;
+                isPositiveZ = false;
                 break;
             case "south":
             case "s":
                 z = amount;
                 break;
+            case "southwest":
+            case "sw":
+                x = amount;
+                isPositiveX = false;
+                z = amount;
+                break;
             case "west":
             case "w":
                 x = amount;
-                isPositive = false;
+                isPositiveX = false;
+                break;
+            case "southeast":
+            case "se":
+                x = amount;
+                z = amount;
                 break;
             case "east":
             case "e":
@@ -104,7 +132,7 @@ public class Move extends Command {
                 Direction dirL = bPlayer.getCardinalDirection();
                 if(dirL.equals(Direction.NORTH)) {
                     x = amount;
-                    isPositive = false;
+                    isPositiveX = false;
                     break;
                 }
                 if(dirL.equals(Direction.SOUTH)) {
@@ -117,7 +145,7 @@ public class Move extends Command {
                 }
                 if(dirL.equals(Direction.EAST)) {
                     z = amount;
-                    isPositive = false;
+                    isPositiveZ = false;
                     break;
                 }
                 return new CommandResponse(prefix + ChatColor.RED + "Not looking in a specific direction!" + ChatColor.LIGHT_PURPLE + " Ensure you are looking directly North, South, East, or West to use the left or right parameter.");
@@ -130,12 +158,12 @@ public class Move extends Command {
                 }
                 if(dirR.equals(Direction.SOUTH)) {
                     x = amount;
-                    isPositive = false;
+                    isPositiveX = false;
                     break;
                 }
                 if(dirR.equals(Direction.WEST)) {
                     z = amount;
-                    isPositive = false;
+                    isPositiveZ = false;
                     break;
                 }
                 if(dirR.equals(Direction.EAST)) {
@@ -144,7 +172,7 @@ public class Move extends Command {
                 }
                 return new CommandResponse(prefix + ChatColor.RED + "Not looking in a specific direction!" + ChatColor.LIGHT_PURPLE + " Ensure you are looking directly North, South, East, or West to use the left or right parameter.");
             default:
-                return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /wemove <number> [direction]", ChatColor.LIGHT_PURPLE + "Example: /wemove 5 north");
+                return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /westack <number> [direction]", ChatColor.LIGHT_PURPLE + "Example: /westack 5 north");
         }
 
         //Check if the player's selection is larger than the max block volume limit
@@ -153,20 +181,26 @@ public class Move extends Command {
         }
 
         //Check if the player's selection plus movement is in a region they are owner of
+        LocalSession localSession = WorldEdit.getInstance().getSessionManager().get(bPlayer);
         Region newPlayerSelection = playerSelection.clone();
         try {
-            newPlayerSelection.expand(BlockVector3.at(
-                    ((isPositive) ? x : -x),
-                    ((isPositive) ? y : -y),
-                    ((isPositive) ? z : -z)));
+            BlockVector3 size = newPlayerSelection.getMaximumPoint().subtract(newPlayerSelection.getMinimumPoint()).add(1, 1, 1);
+            BlockVector3 shiftVector = BlockVector3.at(
+                    ((isPositiveX) ? x : -x),
+                    ((isPositiveY) ? y : -y),
+                    ((isPositiveZ) ? z : -z)).multiply(size).multiply(amount);
+            newPlayerSelection.shift(shiftVector);
+            localSession.getRegionSelector(bPlayer.getWorld()).learnChanges();
+            localSession.getRegionSelector(bPlayer.getWorld()).explainRegionAdjust(bPlayer, localSession);
         } catch (RegionOperationException e) {
-            Bukkit.getConsoleSender().sendMessage(prefix +  ChatColor.RED + "Unable to expand region/selection!");
+            Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Unable to shift/stack region/selection!");
             Bukkit.getConsoleSender().sendMessage(prefix + e);
-            return new CommandResponse(prefix + ChatColor.RED + "Unable to expand region/selection! Contact Administrator!");
+            return new CommandResponse(prefix + ChatColor.RED + "Unable to shift region/selection! Contact Administrator!");
         }
         if(!pluginCheckRegion.isOwner(bPlayer, newPlayerSelection)) {
             return new CommandResponse(prefix + ChatColor.RED + "You cannot WorldEdit outside your plot! Please alter your selection!");
         }
+
 
         //Check if the player is on command cooldown check the CVWorldEditCommandCooldown class
         DecimalFormat format = new DecimalFormat("0.000");
@@ -178,20 +212,18 @@ public class Move extends Command {
         //Start the command cooldown
         pluginCommandCooldown.startCommandCooldown(bPlayer.getUniqueId());
 
-        //move the selection
-        LocalSession localSession = WorldEdit.getInstance().getSessionManager().get(bPlayer);
-        int blocksChanged;
+        //stack the selection
         try (EditSession editSession = localSession.createEditSession(bPlayer)) {
-            blocksChanged = editSession.moveRegion(playerSelection, BlockVector3.at(
-                    ((isPositive) ? x : -x),
-                    ((isPositive) ? y : -y),
-                    ((isPositive) ? z : -z)),
-                    1, false, null);
+            editSession.stackCuboidRegion(playerSelection, BlockVector3.at(
+                    ((isPositiveX) ? x : -x),
+                    ((isPositiveY) ? y : -y),
+                    ((isPositiveZ) ? z : -z)), amount, true);
         } catch (MaxChangedBlocksException e) {
-            Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Unable to replace blocks in selection!");
+            Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Unable to stack region/selection!");
             Bukkit.getConsoleSender().sendMessage(prefix + e);
-            return new CommandResponse(prefix + ChatColor.RED + "Unable to replace blocks in selection! Contact administrator!");
+            return new CommandResponse(prefix + ChatColor.RED + "Unable to stack region/selection! Contact Administrator!");
         }
-        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Moving " + blocksChanged + " blocks to the " + direction);
+
+        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Moving " + amount + " blocks to the " + direction);
     }
 }
