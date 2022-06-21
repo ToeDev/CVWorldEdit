@@ -78,73 +78,73 @@ public class Stack extends Command {
         switch(direction.toLowerCase()) {
             case "up":
             case "u":
-                y = amount;
+                y = 1;
                 break;
             case "down":
             case "d":
-                y = amount;
+                y = 1;
                 isPositiveY = false;
                 break;
             case "north":
             case "n":
-                z = amount;
+                z = 1;
                 isPositiveZ = false;
                 break;
             case "northwest":
             case "nw":
-                x = amount;
+                x = 1;
                 isPositiveX = false;
-                z = amount;
+                z = 1;
                 isPositiveZ = false;
                 break;
             case "northeast":
             case "ne":
-                x = amount;
-                z = amount;
+                x = 1;
+                z = 1;
                 isPositiveZ = false;
                 break;
             case "south":
             case "s":
-                z = amount;
+                z = 1;
                 break;
             case "southwest":
             case "sw":
-                x = amount;
+                x = 1;
                 isPositiveX = false;
-                z = amount;
+                z = 1;
                 break;
             case "west":
             case "w":
-                x = amount;
+                x = 1;
                 isPositiveX = false;
                 break;
             case "southeast":
             case "se":
-                x = amount;
-                z = amount;
+                x = 1;
+                z = 1;
                 break;
             case "east":
             case "e":
-                x = amount;
+                x = 1;
                 break;
             case "left":
             case "l":
                 Direction dirL = bPlayer.getCardinalDirection();
                 if(dirL.equals(Direction.NORTH)) {
-                    x = amount;
+                    x = 1;
                     isPositiveX = false;
                     break;
                 }
                 if(dirL.equals(Direction.SOUTH)) {
-                    x = amount;
+                    x = 1;
                     break;
                 }
                 if(dirL.equals(Direction.WEST)) {
-                    z = amount;
+                    z = 1;
                     break;
                 }
                 if(dirL.equals(Direction.EAST)) {
-                    z = amount;
+                    z = 1;
                     isPositiveZ = false;
                     break;
                 }
@@ -153,21 +153,21 @@ public class Stack extends Command {
             case "r":
                 Direction dirR = bPlayer.getCardinalDirection();
                 if(dirR.equals(Direction.NORTH)) {
-                    x = amount;
+                    x = 1;
                     break;
                 }
                 if(dirR.equals(Direction.SOUTH)) {
-                    x = amount;
+                    x = 1;
                     isPositiveX = false;
                     break;
                 }
                 if(dirR.equals(Direction.WEST)) {
-                    z = amount;
+                    z = 1;
                     isPositiveZ = false;
                     break;
                 }
                 if(dirR.equals(Direction.EAST)) {
-                    z = amount;
+                    z = 1;
                     break;
                 }
                 return new CommandResponse(prefix + ChatColor.RED + "Not looking in a specific direction!" + ChatColor.LIGHT_PURPLE + " Ensure you are looking directly North, South, East, or West to use the left or right parameter.");
@@ -190,8 +190,6 @@ public class Stack extends Command {
                     ((isPositiveY) ? y : -y),
                     ((isPositiveZ) ? z : -z)).multiply(size).multiply(amount);
             newPlayerSelection.shift(shiftVector);
-            localSession.getRegionSelector(bPlayer.getWorld()).learnChanges();
-            localSession.getRegionSelector(bPlayer.getWorld()).explainRegionAdjust(bPlayer, localSession);
         } catch (RegionOperationException e) {
             Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Unable to shift/stack region/selection!");
             Bukkit.getConsoleSender().sendMessage(prefix + e);
@@ -218,12 +216,13 @@ public class Stack extends Command {
                     ((isPositiveX) ? x : -x),
                     ((isPositiveY) ? y : -y),
                     ((isPositiveZ) ? z : -z)), amount, true);
+            localSession.remember(editSession);
         } catch (MaxChangedBlocksException e) {
             Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Unable to stack region/selection!");
             Bukkit.getConsoleSender().sendMessage(prefix + e);
             return new CommandResponse(prefix + ChatColor.RED + "Unable to stack region/selection! Contact Administrator!");
         }
 
-        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Moving " + amount + " blocks to the " + direction);
+        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Moving " + amount + " blocks " + direction);
     }
 }

@@ -187,6 +187,7 @@ public class Move extends Command {
                     ((isPositive) ? y : -y),
                     ((isPositive) ? z : -z)),
                     1, false, null);
+            localSession.remember(editSession);
         } catch (MaxChangedBlocksException e) {
             Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Unable to replace blocks in selection!");
             Bukkit.getConsoleSender().sendMessage(prefix + e);
