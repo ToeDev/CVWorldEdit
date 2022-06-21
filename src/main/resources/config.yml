@@ -1,7 +1,7 @@
 ################################################################
 # Cooldown in between entering certain block-altering commands #
 ################################################################
-Command-Cooldown: 3
+Command-Cooldown: 2
 
 ################################################################################
 # Block volume limit per command (with the exception of the plotclear command) #

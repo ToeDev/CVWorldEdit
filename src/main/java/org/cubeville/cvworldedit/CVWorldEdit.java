@@ -78,6 +78,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
     private CommandParser wandParser;
     private CommandParser expandParser;
     private CommandParser contractParser;
+    private CommandParser shiftParser;
     private CommandParser sizeParser;
     private CommandParser selectionParser;
 
@@ -194,6 +195,8 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         expandParser.addCommand(new Expand(this));
         contractParser = new CommandParser();
         contractParser.addCommand(new Contract(this));
+        shiftParser = new CommandParser();
+        shiftParser.addCommand(new Shift(this));
         sizeParser = new CommandParser();
         sizeParser.addCommand(new Size(this));
         selectionParser = new CommandParser();
@@ -338,6 +341,8 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
                 return expandParser.execute(sender, args);
             case "cvcontract":
                 return contractParser.execute(sender, args);
+            case "cvshift":
+                return shiftParser.execute(sender, args);
             case "cvsize":
                 return sizeParser.execute(sender, args);
             case "cvselection":

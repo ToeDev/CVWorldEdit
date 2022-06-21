@@ -20,15 +20,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class Expand extends Command {
+public class Shift extends Command {
 
     final private CVWorldEdit plugin;
     final private String prefix;
 
-    public Expand(CVWorldEdit plugin) {
+    public Shift(CVWorldEdit plugin) {
         super("");
-        addBaseParameter(new CommandParameterInteger()); //number of blocks to expand
-        addOptionalBaseParameter(new CommandParameterString()); //direction to expand
+        addBaseParameter(new CommandParameterInteger()); //number of blocks to move
+        addOptionalBaseParameter(new CommandParameterString()); //direction to move
 
         this.plugin = plugin;
         prefix = this.plugin.getPrefix();
@@ -38,7 +38,7 @@ public class Expand extends Command {
     public CommandResponse execute(Player sender, Set<String> set, Map<String, Object> map, List<Object> baseParameters) {
 
         if (baseParameters.size() > 2) {
-            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /weexpand <number> [direction]", ChatColor.LIGHT_PURPLE + "Example: /weexpand 5 north");
+            return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /weshift <number> [direction]", ChatColor.LIGHT_PURPLE + "Example: /wemove 5 north");
         }
 
         //Change players args into variables
@@ -140,25 +140,23 @@ public class Expand extends Command {
                 }
                 return new CommandResponse(prefix + ChatColor.RED + "Not looking in a specific direction!" + ChatColor.LIGHT_PURPLE + " Ensure you are looking directly North, South, East, or West to use the left or right parameter.");
             default:
-                return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /weexpand <number> [direction]", ChatColor.LIGHT_PURPLE + "Example: /weexpand 5 north");
+                return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /weshift <number> [direction]", ChatColor.LIGHT_PURPLE + "Example: /wemove 5 north");
         }
 
-        //apply region expansion
-        long oldSize = playerSelection.getVolume();
+        //apply region move
         try {
-            playerSelection.expand(BlockVector3.at(
+            playerSelection.shift(BlockVector3.at(
                     ((isPositive) ? x : -x),
                     ((isPositive) ? y : -y),
                     ((isPositive) ? z : -z)));
         } catch (RegionOperationException e) {
-            Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Unable to expand region/selection!");
+            Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Unable to shift region/selection!");
             Bukkit.getConsoleSender().sendMessage(prefix + e);
-            return new CommandResponse(prefix + ChatColor.RED + "Unable to expand region/selection! Contact Administrator!");
+            return new CommandResponse(prefix + ChatColor.RED + "Unable to shift region/selection! Contact Administrator!");
         }
         selector.learnChanges();
         selector.explainRegionAdjust(bPlayer, localSession);
-        long newSize = playerSelection.getVolume();
 
-        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Selection expanded " + (newSize - oldSize) + " blocks " + direction);
+        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Selection shifted " + amount + " blocks to " + direction);
     }
 }

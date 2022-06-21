@@ -30,6 +30,9 @@ commands:
   cvcontract:
     aliases: wecontract
     permission: CVWorldEdit.selection.commands
+  cvshift:
+    aliases: weshift
+    permission: CVWorldEdit.selection.commands
   cvselection:
     aliases: weselection
     permission: CVWorldEdit.selection.commands
