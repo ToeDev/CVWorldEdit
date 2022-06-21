@@ -55,7 +55,6 @@ public class Stack extends Command {
             direction = (String) baseParameters.get(1);
         } else {
             direction = plugin.getPlayerFacingSpecific(sender);
-            sender.sendMessage(direction);
         }
 
         //Check if player has a selection made
