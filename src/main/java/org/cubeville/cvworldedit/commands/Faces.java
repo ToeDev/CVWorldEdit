@@ -3,6 +3,7 @@ package org.cubeville.cvworldedit.commands;
 import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitPlayer;
+import com.sk89q.worldedit.function.pattern.RandomPattern;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import org.bukkit.Bukkit;
@@ -17,10 +18,7 @@ import org.cubeville.cvworldedit.CheckRegion;
 import org.cubeville.cvworldedit.CommandCooldown;
 
 import java.text.DecimalFormat;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class Faces extends Command {
 
@@ -49,14 +47,38 @@ public class Faces extends Command {
         if (baseParameters.size() != 1) {
             return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /wewalls <targetblock>");
         }
-        String targetBlock = baseParameters.get(0).toString().toLowerCase();
-        if (BlockTypes.get(targetBlock) == null) {
-            return new CommandResponse(prefix + ChatColor.RED + targetBlock.toUpperCase() + " is not a valid block!");
-        }
 
-        //Check if target block is on the Block Blacklist
-        if(pluginBlacklist.checkBlockBanned(targetBlock)) {
-            return new CommandResponse(prefix + ChatColor.RED + "You cannot WorldEdit the following block! " + ChatColor.GOLD + targetBlock);
+        //Check if block(s) are valid or on the blacklist
+        String[] tempTargetBlocks;
+        Map<String, Integer> targetBlocks = new HashMap<>();
+        String target = baseParameters.get(0).toString().toLowerCase();
+        if(target.contains(",")) {
+            tempTargetBlocks = target.split(",");
+        } else {
+            tempTargetBlocks = new String[] {target};
+        }
+        for(String s : tempTargetBlocks) {
+            String i;
+            if(s.contains("%")) {
+                i = s.substring(0, s.indexOf("%"));
+                s = s.replaceAll(".+%", "");
+                try {
+                    Integer.parseInt(i);
+                } catch(NumberFormatException e) {
+                    return new CommandResponse(prefix + ChatColor.RED + i + "% is not a valid percentage!");
+                }
+            } else {
+                i = String.valueOf(1);
+            }
+            targetBlocks.put(s, Integer.valueOf(i));
+        }
+        for(String targetBlock : targetBlocks.keySet()) {
+            if (BlockTypes.get(targetBlock) == null) {
+                return new CommandResponse(prefix + ChatColor.RED + targetBlock.toUpperCase() + " is not a valid block!");
+            }
+            if(pluginBlacklist.checkBlockBanned(targetBlock)) {
+                return new CommandResponse(prefix + ChatColor.RED + "You cannot WorldEdit the following block! " + ChatColor.GOLD + targetBlock);
+            }
         }
 
         //Check if player has a selection made
@@ -94,16 +116,22 @@ public class Faces extends Command {
         //Start the command cooldown
         pluginCommandCooldown.startCommandCooldown(bPlayer.getUniqueId());
 
+        //Get the block pattern
+        RandomPattern pattern = new RandomPattern();
+        for(String block : targetBlocks.keySet()) {
+            pattern.add(Objects.requireNonNull(BlockTypes.get(block)).getDefaultState(), targetBlocks.get(block));
+        }
+
         //Set the blocks
         LocalSession localSession = WorldEdit.getInstance().getSessionManager().get(bPlayer);
         int blocksChanged;
         try (EditSession editSession = localSession.createEditSession(bPlayer)) {
-            blocksChanged = editSession.makeFaces(playerSelection, Objects.requireNonNull(BlockTypes.get(targetBlock)).getDefaultState());
+            blocksChanged = editSession.makeFaces(playerSelection, pattern);
             localSession.remember(editSession);
         } catch (Exception e) {
             Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "Unable to replace blocks in selection! (did volume exceed allowed amount?)");
-            return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + targetBlock);
+            return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + targetBlocks.keySet().toString().replace("[", "").replace("]", ""));
         }
-        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Setting " + blocksChanged + " " + targetBlock.toUpperCase());
+        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Setting " + blocksChanged + " " + targetBlocks.keySet().toString().replace("[", "").replace("]", ""));
     }
 }

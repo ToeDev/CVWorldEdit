@@ -3,14 +3,14 @@ package org.cubeville.cvworldedit.commands;
 import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitPlayer;
-import com.sk89q.worldedit.extension.input.InputParseException;
 import com.sk89q.worldedit.extension.input.ParserContext;
 import com.sk89q.worldedit.extension.platform.Locatable;
 import com.sk89q.worldedit.extent.Extent;
 import com.sk89q.worldedit.function.mask.BlockTypeMask;
-import com.sk89q.worldedit.function.pattern.Pattern;
+import com.sk89q.worldedit.function.pattern.RandomPattern;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.World;
+import com.sk89q.worldedit.world.block.BlockType;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -53,18 +53,53 @@ public class Replace extends Command {
         if (baseParameters.size() != 2) {
             return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: /wereplace <sourceblock> <targetblock>");
         }
-        String sourceBlock = baseParameters.get(0).toString().toLowerCase();
-        String targetBlock = baseParameters.get(1).toString().toLowerCase();
-        if (BlockTypes.get(sourceBlock) == null) {
-            return new CommandResponse(prefix + ChatColor.RED + sourceBlock.toUpperCase() + " is not a valid block!");
-        }
-        if (BlockTypes.get(targetBlock) == null) {
-            return new CommandResponse(prefix + ChatColor.RED + targetBlock.toUpperCase() + " is not a valid block!");
-        }
 
-        //Check if target block is on the Block Blacklist
-        if(pluginBlacklist.checkBlockBanned(targetBlock)) {
-            return new CommandResponse(prefix + ChatColor.RED + "You cannot WorldEdit the following block! " + ChatColor.GOLD + targetBlock);
+        //Check if block(s) are valid or on the blacklist
+        String[] tempTargetBlocks;
+        Map<String, Integer> targetBlocks = new HashMap<>();
+        String target = baseParameters.get(1).toString().toLowerCase();
+        if(target.contains(",")) {
+            tempTargetBlocks = target.split(",");
+        } else {
+            tempTargetBlocks = new String[] {target};
+        }
+        for(String s : tempTargetBlocks) {
+            String i;
+            if(s.contains("%")) {
+                i = s.substring(0, s.indexOf("%"));
+                s = s.replaceAll(".+%", "");
+                try {
+                    Integer.parseInt(i);
+                } catch(NumberFormatException e) {
+                    return new CommandResponse(prefix + ChatColor.RED + i + "% is not a valid percentage!");
+                }
+            } else {
+                i = String.valueOf(1);
+            }
+            targetBlocks.put(s, Integer.valueOf(i));
+        }
+        for(String targetBlock : targetBlocks.keySet()) {
+            if (BlockTypes.get(targetBlock) == null) {
+                return new CommandResponse(prefix + ChatColor.RED + targetBlock.toUpperCase() + " is not a valid block!");
+            }
+            if(pluginBlacklist.checkBlockBanned(targetBlock)) {
+                return new CommandResponse(prefix + ChatColor.RED + "You cannot WorldEdit the following block! " + ChatColor.GOLD + targetBlock);
+            }
+        }
+        String[] tempSourceBlocks;
+        List<BlockType> sourceBlocks = new ArrayList<>();
+        String source = baseParameters.get(0).toString().toLowerCase();
+        if(source.contains(",")) {
+            tempSourceBlocks = source.split(",");
+        } else {
+            tempSourceBlocks = new String[] {source};
+        }
+        for(String sourceBlock : tempSourceBlocks) {
+            sourceBlock = sourceBlock.replaceAll(".+%", "");
+            if (BlockTypes.get(sourceBlock) == null) {
+                return new CommandResponse(prefix + ChatColor.RED + sourceBlock.toUpperCase() + " is not a valid block!");
+            }
+            sourceBlocks.add(BlockTypes.get(sourceBlock));
         }
 
         //Check if player has a selection made
@@ -86,15 +121,11 @@ public class Replace extends Command {
         parserContext.setSession(session);
         parserContext.setRestricted(true);
 
-        //Get a Mask(for source) and Pattern(for target)
-        BlockTypeMask from = new BlockTypeMask(extent, BlockTypes.get(sourceBlock));
-        Pattern to;
-        try {
-            to = WorldEdit.getInstance().getPatternFactory().parseFromInput(targetBlock, parserContext);
-        } catch (InputParseException e) {
-            Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Unable to get pattern from the targetBlock!");
-            Bukkit.getConsoleSender().sendMessage(prefix + e);
-            return new CommandResponse(prefix + ChatColor.RED + "Unable to use target block! Contact administrator!");
+        //Get the block pattern and mask
+        BlockTypeMask fromMask = new BlockTypeMask(extent, sourceBlocks);
+        RandomPattern to = new RandomPattern();
+        for(String block : targetBlocks.keySet()) {
+            to.add(Objects.requireNonNull(BlockTypes.get(block)).getDefaultState(), targetBlocks.get(block));
         }
 
         //Check if the player's selection is larger than the max block volume limit
@@ -104,7 +135,7 @@ public class Replace extends Command {
         LocalSession localSession = WorldEdit.getInstance().getSessionManager().get(bPlayer);
         int blocksChanging;
         try (EditSession editSession = localSession.createEditSession(bPlayer)) {
-            blocksChanging = editSession.countBlocks(playerSelection, from);
+            blocksChanging = editSession.countBlocks(playerSelection, fromMask);
         }
         if(plugin.getBlockVolumeLimit() < blocksChanging) {
             return new CommandResponse(prefix + ChatColor.RED + "Your selection is too large! (" + ChatColor.GOLD + blocksChanging + ChatColor.RED + ")" +  " The maximum block count per command is " + ChatColor.GOLD + plugin.getBlockVolumeLimit());
@@ -128,13 +159,13 @@ public class Replace extends Command {
         //Replace the blocks
         int blocksChanged;
         try (EditSession editSession = localSession.createEditSession(bPlayer)) {
-            blocksChanged = editSession.replaceBlocks(playerSelection, from, to);
+            blocksChanged = editSession.replaceBlocks(playerSelection, fromMask, to);
             localSession.remember(editSession);
         } catch (Exception e) {
             Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "Unable to replace blocks in selection! (did volume exceed allowed amount?)");
-            return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + targetBlock);
+            return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + targetBlocks.keySet().toString().replace("[", "").replace("]", ""));
         }
-        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Replacing " + blocksChanged + " " + sourceBlock.toUpperCase() + " with " + targetBlock.toUpperCase());
+        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Replacing " + blocksChanged + " " + Arrays.toString(sourceBlocks.toArray()).replace("[", "").replace("]", "").replace("minecraft:", "") + " with " + targetBlocks.keySet().toString().replace("[", "").replace("]", ""));
     }
 
 
