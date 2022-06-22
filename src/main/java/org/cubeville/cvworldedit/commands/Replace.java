@@ -163,9 +163,9 @@ public class Replace extends Command {
             localSession.remember(editSession);
         } catch (Exception e) {
             Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "Unable to replace blocks in selection! (did volume exceed allowed amount?)");
-            return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + targetBlocks.keySet().toString().replace("[", "").replace("]", ""));
+            return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + Arrays.toString(tempTargetBlocks).replace("[", "").replace("]", ""));
         }
-        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Replacing " + blocksChanged + " " + Arrays.toString(sourceBlocks.toArray()).replace("[", "").replace("]", "").replace("minecraft:", "") + " with " + targetBlocks.keySet().toString().replace("[", "").replace("]", ""));
+        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Replacing " + blocksChanged + " " + Arrays.toString(tempSourceBlocks).replace("[", "").replace("]", "") + " with " + Arrays.toString(tempTargetBlocks).replace("[", "").replace("]", ""));
     }
 
 

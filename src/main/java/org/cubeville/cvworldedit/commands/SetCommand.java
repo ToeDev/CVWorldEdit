@@ -4,7 +4,6 @@ import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.function.pattern.RandomPattern;
-import com.sk89q.worldedit.function.pattern.TypeApplyingPattern;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import org.bukkit.Bukkit;
@@ -69,15 +68,13 @@ public class SetCommand extends Command {
             } else {
                 i = String.valueOf(1);
             }
+            if (BlockTypes.get(s) == null) {
+                return new CommandResponse(prefix + ChatColor.RED + s.toUpperCase() + " is not a valid block!");
+            }
+            if(pluginBlacklist.checkBlockBanned(s)) {
+                return new CommandResponse(prefix + ChatColor.RED + "You cannot WorldEdit the following block! " + ChatColor.GOLD + s);
+            }
             targetBlocks.put(s, Integer.valueOf(i));
-        }
-        for(String targetBlock : targetBlocks.keySet()) {
-            if (BlockTypes.get(targetBlock) == null) {
-                return new CommandResponse(prefix + ChatColor.RED + targetBlock.toUpperCase() + " is not a valid block!");
-            }
-            if(pluginBlacklist.checkBlockBanned(targetBlock)) {
-                return new CommandResponse(prefix + ChatColor.RED + "You cannot WorldEdit the following block! " + ChatColor.GOLD + targetBlock);
-            }
         }
 
         //Check if player has a selection made
@@ -124,8 +121,8 @@ public class SetCommand extends Command {
             localSession.remember(editSession);
         } catch (Exception e) {
             Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "Unable to replace blocks in selection! (did volume exceed allowed amount?)");
-            return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + targetBlocks.keySet().toString().replace("[", "").replace("]", ""));
+            return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + Arrays.toString(tempTargetBlocks).replace("[", "").replace("]", ""));
         }
-        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Setting " + blocksChanged + " " + targetBlocks.keySet().toString().replace("[", "").replace("]", ""));
+        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Setting " + blocksChanged + " " + Arrays.toString(tempTargetBlocks).replace("[", "").replace("]", ""));
     }
 }
