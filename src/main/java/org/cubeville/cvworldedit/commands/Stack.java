@@ -175,8 +175,8 @@ public class Stack extends Command {
         }
 
         //Check if the player's selection is larger than the max block volume limit
-        if(plugin.getBlockVolumeLimit() < playerSelection.getVolume()) {
-            return new CommandResponse(prefix + ChatColor.RED + "Your selection is too large! (" + ChatColor.GOLD + playerSelection.getVolume() + ChatColor.RED + ")" +  " The maximum block count per command is " + ChatColor.GOLD + plugin.getBlockVolumeLimit());
+        if(plugin.getBlockVolumeLimit() < playerSelection.getVolume() * amount) {
+            return new CommandResponse(prefix + ChatColor.RED + "Your selection is too large! (" + ChatColor.GOLD + playerSelection.getVolume() * amount + ChatColor.RED + ")" +  " The maximum block count per command is " + ChatColor.GOLD + plugin.getBlockVolumeLimit());
         }
 
         //Check if the player's selection plus movement is in a region they are owner of
@@ -222,6 +222,6 @@ public class Stack extends Command {
             return new CommandResponse(prefix + ChatColor.RED + "Unable to stack region/selection! Contact Administrator!");
         }
 
-        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Moving " + amount + " blocks " + direction);
+        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Moving " + playerSelection.getVolume() + " blocks " + direction + " " + amount + " blocks");
     }
 }
