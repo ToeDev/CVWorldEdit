@@ -5,6 +5,10 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.function.pattern.RandomPattern;
 import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.registry.state.*;
+import com.sk89q.worldedit.util.Direction;
+import com.sk89q.worldedit.world.block.BlockState;
+import com.sk89q.worldedit.world.block.BlockType;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -48,10 +52,10 @@ public class SetCommand extends Command {
 
         //Check if block(s) are valid or on the blacklist
         String[] tempTargetBlocks;
-        Map<String, Integer> targetBlocks = new HashMap<>();
+        Map<BlockState, Integer> targetBlocks = new HashMap<>();
         String target = baseParameters.get(0).toString().toLowerCase();
         if(target.contains(",")) {
-            tempTargetBlocks = target.split(",");
+            tempTargetBlocks = splitNicely(target);
         } else {
             tempTargetBlocks = new String[] {target};
         }
@@ -68,13 +72,78 @@ public class SetCommand extends Command {
             } else {
                 i = String.valueOf(1);
             }
+            String[] states = new String[0];
+            //String state = null;
+            if(s.contains("[") && s.contains("]")) {
+                //state = s.substring(s.indexOf("[") + 1, s.indexOf("]"));
+                String tempStates = s.substring(s.indexOf("[") + 1, s.indexOf("]"));
+                states = tempStates.split(",");
+                s = s.substring(0, s.indexOf("["));
+            }
             if (BlockTypes.get(s) == null) {
                 return new CommandResponse(prefix + ChatColor.RED + s.toUpperCase() + " is not a valid block!");
             }
             if(pluginBlacklist.checkBlockBanned(s)) {
                 return new CommandResponse(prefix + ChatColor.RED + "You cannot WorldEdit the following block! " + ChatColor.GOLD + s);
             }
-            targetBlocks.put(s, Integer.valueOf(i));
+            BlockType type = Objects.requireNonNull(BlockTypes.get(s));
+            if(states.length < 1) {
+                targetBlocks.put(type.getDefaultState(), Integer.valueOf(i));
+            } else {
+                for(String checkState : states) {
+                    if(type.getProperty(checkState.substring(0, checkState.indexOf("="))) == null) {
+                        return new CommandResponse(prefix + ChatColor.RED + checkState.substring(0, checkState.indexOf("=")) + " is not a valid BlockState for " + s);
+                    }
+                    if(!type.getProperty(checkState.substring(0, checkState.indexOf("="))).getValues().contains(checkState.substring(checkState.indexOf("=") + 1))) {
+                        return new CommandResponse(prefix + ChatColor.RED + checkState.substring(checkState.indexOf("=") + 1) + " is not a valid value for BlockState " + checkState.substring(0, checkState.indexOf("=")));
+                    }
+                }
+                Map<Property<?>, Object> p = new HashMap<>();
+                for(Property<?> property : type.getProperties()) {
+                    int found = 0;
+                    for(String state : states) {
+                        if(property.getName().equalsIgnoreCase(state.substring(0, state.indexOf("=")))) {
+                            String v = state.substring(state.indexOf("=") + 1);
+                            Object object = null;
+                            if(property instanceof BooleanProperty) {
+                                object = Boolean.valueOf(v);
+                            } else if(property instanceof DirectionalProperty) {
+                                for(Direction d : Direction.values()) {
+                                    if(d.toString().equalsIgnoreCase(v)) {
+                                        object = d;
+                                        break;
+                                    }
+                                }
+                            } else if(property instanceof IntegerProperty) {
+                                object = Integer.valueOf(v);
+                            } else {
+                                object = v;
+                            }
+                            p.put(property, object);
+                            found++;
+                            break;
+                        }
+                    }
+                    if(found == 0) {
+                        p.put(property, property.getValues().get(0));
+                    }
+                }
+
+                targetBlocks.put(type.getState(p), Integer.valueOf(i));
+
+                /*//TODO THIS WORKS FOR SINGLE STATES!
+                if(type.getProperty(state.substring(0, state.indexOf("="))) != null) {
+                    if(type.getProperty(state.substring(0, state.indexOf("="))).getValues().contains(state.substring(state.indexOf("=") + 1))) {
+                        Map<Property<?>, Object> p = new HashMap<>();
+                        p.put(type.getProperty(state.substring(0, state.indexOf("="))), state.substring(state.indexOf("=") + 1));
+                        targetBlocks.put(type.getState(p), Integer.valueOf(i));
+                    } else {
+                        return new CommandResponse(prefix + ChatColor.RED + state.substring(state.indexOf("=") + 1) + " is not a valid value for BlockState " + state.substring(0, state.indexOf("=")));
+                    }
+                } else {
+                    return new CommandResponse(prefix + ChatColor.RED + state.substring(0, state.indexOf("=")) + " is not a valid BlockState for " + s);
+                }*/
+            }
         }
 
         //Check if player has a selection made
@@ -109,8 +178,8 @@ public class SetCommand extends Command {
 
         //Get the block pattern
         RandomPattern pattern = new RandomPattern();
-        for(String block : targetBlocks.keySet()) {
-            pattern.add(Objects.requireNonNull(BlockTypes.get(block)).getDefaultState(), targetBlocks.get(block));
+        for(BlockState block : targetBlocks.keySet()) {
+            pattern.add(block, targetBlocks.get(block));
         }
 
         //Set the blocks
@@ -121,8 +190,33 @@ public class SetCommand extends Command {
             localSession.remember(editSession);
         } catch (Exception e) {
             Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "Unable to replace blocks in selection! (did volume exceed allowed amount?)");
-            return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + Arrays.toString(tempTargetBlocks).replace("[", "").replace("]", ""));
+            return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + Arrays.toString(tempTargetBlocks).substring(1, Arrays.toString(tempTargetBlocks).length() - 1).replaceAll("\\[.+]", ""));
         }
-        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Setting " + blocksChanged + " " + Arrays.toString(tempTargetBlocks).replace("[", "").replace("]", ""));
+        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Setting " + blocksChanged + " " + Arrays.toString(tempTargetBlocks).substring(1, Arrays.toString(tempTargetBlocks).length() - 1).replaceAll("\\[.+]", ""));
+    }
+
+    private String[] splitNicely(String string) {
+        List<String> split = new ArrayList<>();
+        int open = string.indexOf("[");
+        int close = string.indexOf("]");
+        int comma = string.indexOf(",");
+
+        while (comma != -1) {
+            if (close < comma && open > comma) {
+
+                split.add(string.substring(0, comma));
+                string = string.substring(comma + 1);
+
+                open = string.indexOf("[");
+                close = string.indexOf("]");
+                comma = string.indexOf(",");
+            } else {
+                open = string.indexOf("[", comma + 1);
+                close = string.indexOf("]", comma + 1);
+                comma = string.indexOf(",", comma + 1);
+            }
+        }
+        split.add(string);
+        return split.toArray(new String[0]);
     }
 }
