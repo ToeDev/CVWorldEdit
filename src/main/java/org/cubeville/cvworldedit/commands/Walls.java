@@ -5,6 +5,8 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.function.pattern.RandomPattern;
 import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.world.block.BlockState;
+import com.sk89q.worldedit.world.block.BlockType;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,10 +14,7 @@ import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.Command;
 import org.cubeville.commons.commands.CommandParameterString;
 import org.cubeville.commons.commands.CommandResponse;
-import org.cubeville.cvworldedit.CVWorldEdit;
-import org.cubeville.cvworldedit.CheckBlacklist;
-import org.cubeville.cvworldedit.CheckRegion;
-import org.cubeville.cvworldedit.CommandCooldown;
+import org.cubeville.cvworldedit.*;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -26,10 +25,11 @@ public class Walls extends Command {
     final private CheckBlacklist pluginBlacklist;
     final private CheckRegion pluginCheckRegion;
     final private CommandCooldown pluginCommandCooldown;
+    final private Utils pluginUtils;
 
     final private String prefix;
 
-    public Walls(CVWorldEdit plugin, CheckBlacklist pluginBlacklist, CheckRegion pluginCheckRegion, CommandCooldown pluginCommandCooldown) {
+    public Walls(CVWorldEdit plugin, CheckBlacklist pluginBlacklist, CheckRegion pluginCheckRegion, CommandCooldown pluginCommandCooldown, Utils pluginUtils) {
         super("");
         addBaseParameter(new CommandParameterString()); //target block
 
@@ -39,6 +39,7 @@ public class Walls extends Command {
         this.pluginBlacklist = pluginBlacklist;
         this.pluginCheckRegion = pluginCheckRegion;
         this.pluginCommandCooldown = pluginCommandCooldown;
+        this.pluginUtils = pluginUtils;
     }
 
     @Override
@@ -50,10 +51,10 @@ public class Walls extends Command {
 
         //Check if block(s) are valid or on the blacklist
         String[] tempTargetBlocks;
-        Map<String, Integer> targetBlocks = new HashMap<>();
+        Map<BlockState, Integer> targetBlocks = new HashMap<>();
         String target = baseParameters.get(0).toString().toLowerCase();
         if(target.contains(",")) {
-            tempTargetBlocks = target.split(",");
+            tempTargetBlocks = pluginUtils.splitNicely(target);
         } else {
             tempTargetBlocks = new String[] {target};
         }
@@ -70,14 +71,27 @@ public class Walls extends Command {
             } else {
                 i = String.valueOf(1);
             }
-            targetBlocks.put(s, Integer.valueOf(i));
-        }
-        for(String targetBlock : targetBlocks.keySet()) {
-            if (BlockTypes.get(targetBlock) == null) {
-                return new CommandResponse(prefix + ChatColor.RED + targetBlock.toUpperCase() + " is not a valid block!");
+            String[] states = new String[0];
+            if(s.contains("[") && s.contains("]")) {
+                String tempStates = s.substring(s.indexOf("[") + 1, s.indexOf("]"));
+                states = tempStates.split(",");
+                s = s.substring(0, s.indexOf("["));
             }
-            if(pluginBlacklist.checkBlockBanned(targetBlock)) {
-                return new CommandResponse(prefix + ChatColor.RED + "You cannot WorldEdit the following block! " + ChatColor.GOLD + targetBlock);
+            if (BlockTypes.get(s) == null) {
+                return new CommandResponse(prefix + ChatColor.RED + s.toUpperCase() + " is not a valid block!");
+            }
+            if(pluginBlacklist.checkBlockBanned(s)) {
+                return new CommandResponse(prefix + ChatColor.RED + "You cannot WorldEdit the following block! " + ChatColor.GOLD + s);
+            }
+            BlockType type = Objects.requireNonNull(BlockTypes.get(s));
+            if(states.length < 1) {
+                targetBlocks.put(type.getDefaultState(), Integer.valueOf(i));
+            } else {
+                BlockState state = pluginUtils.getBlockState(type, states, sender);
+                if(state == null) {
+                    return new CommandResponse("");
+                }
+                targetBlocks.put(state, Integer.valueOf(i));
             }
         }
 
@@ -117,8 +131,8 @@ public class Walls extends Command {
 
         //Get the block pattern
         RandomPattern pattern = new RandomPattern();
-        for(String block : targetBlocks.keySet()) {
-            pattern.add(Objects.requireNonNull(BlockTypes.get(block)).getDefaultState(), targetBlocks.get(block));
+        for(BlockState block : targetBlocks.keySet()) {
+            pattern.add(block, targetBlocks.get(block));
         }
 
         //Set the blocks
@@ -129,8 +143,8 @@ public class Walls extends Command {
             localSession.remember(editSession);
         } catch (Exception e) {
             Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "Unable to replace blocks in selection! (did volume exceed allowed amount?)");
-            return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + Arrays.toString(tempTargetBlocks).replace("[", "").replace("]", ""));
+            return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + Arrays.toString(tempTargetBlocks).substring(1, Arrays.toString(tempTargetBlocks).length() - 1).replaceAll("\\[.+]", ""));
         }
-        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Setting " + blocksChanged + " " + Arrays.toString(tempTargetBlocks).replace("[", "").replace("]", ""));
+        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Setting " + blocksChanged + " " + Arrays.toString(tempTargetBlocks).substring(1, Arrays.toString(tempTargetBlocks).length() - 1).replaceAll("\\[.+]", ""));
     }
 }

@@ -6,11 +6,9 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.extension.platform.permission.ActorSelectorLimits;
-import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionSelector;
-import com.sk89q.worldedit.util.Direction;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -36,7 +34,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.logging.Level;
 
 public class CVWorldEdit extends JavaPlugin implements Listener {
 
@@ -149,18 +146,18 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
         helpParser.addCommand(new Help());
         clearPlotParser = new CommandParser();
         clearPlotParser.addCommand(new ClearPlot(this));
+        Utils pluginUtils = new Utils(this);
         CheckBlacklist pluginBlacklist = new CheckBlacklist(this);
         CheckRegion pluginCheckRegion = new CheckRegion();
         CommandCooldown pluginCommandCooldown = new CommandCooldown(this);
-        Rotate pluginRotate = new Rotate(this);
         setParser = new CommandParser();
-        setParser.addCommand(new SetCommand(this, pluginBlacklist, pluginCheckRegion, pluginCommandCooldown));
+        setParser.addCommand(new SetCommand(this, pluginBlacklist, pluginCheckRegion, pluginCommandCooldown, pluginUtils));
         wallsParser = new CommandParser();
-        wallsParser.addCommand(new Walls(this, pluginBlacklist, pluginCheckRegion, pluginCommandCooldown));
+        wallsParser.addCommand(new Walls(this, pluginBlacklist, pluginCheckRegion, pluginCommandCooldown, pluginUtils));
         facesParser = new CommandParser();
-        facesParser.addCommand(new Faces(this, pluginBlacklist, pluginCheckRegion, pluginCommandCooldown));
+        facesParser.addCommand(new Faces(this, pluginBlacklist, pluginCheckRegion, pluginCommandCooldown, pluginUtils));
         replaceParser = new CommandParser();
-        replaceParser.addCommand(new Replace(this, pluginBlacklist, pluginCheckRegion, pluginCommandCooldown));
+        replaceParser.addCommand(new Replace(this, pluginBlacklist, pluginCheckRegion, pluginCommandCooldown, pluginUtils));
         stackParser = new CommandParser();
         stackParser.addCommand(new Stack(this, pluginCheckRegion, pluginCommandCooldown));
         moveParser = new CommandParser();

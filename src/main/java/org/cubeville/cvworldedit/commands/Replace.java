@@ -10,6 +10,7 @@ import com.sk89q.worldedit.function.mask.BlockTypeMask;
 import com.sk89q.worldedit.function.pattern.RandomPattern;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.World;
+import com.sk89q.worldedit.world.block.BlockState;
 import com.sk89q.worldedit.world.block.BlockType;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import org.bukkit.Bukkit;
@@ -17,10 +18,7 @@ import org.bukkit.ChatColor;
 
 import org.bukkit.entity.Player;
 import org.cubeville.commons.commands.*;
-import org.cubeville.cvworldedit.CVWorldEdit;
-import org.cubeville.cvworldedit.CheckBlacklist;
-import org.cubeville.cvworldedit.CheckRegion;
-import org.cubeville.cvworldedit.CommandCooldown;
+import org.cubeville.cvworldedit.*;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -31,10 +29,11 @@ public class Replace extends Command {
     final private CommandCooldown pluginCommandCooldown;
     final private CheckBlacklist pluginBlacklist;
     final private CheckRegion pluginCheckRegion;
+    final private Utils pluginUtils;
 
     final private String prefix;
 
-    public Replace(CVWorldEdit plugin, CheckBlacklist pluginBlacklist, CheckRegion pluginCheckRegion, CommandCooldown pluginCommandCooldown) {
+    public Replace(CVWorldEdit plugin, CheckBlacklist pluginBlacklist, CheckRegion pluginCheckRegion, CommandCooldown pluginCommandCooldown, Utils pluginUtils) {
         super("");
         addBaseParameter(new CommandParameterString()); //source block
         addBaseParameter(new CommandParameterString()); //target block
@@ -45,6 +44,7 @@ public class Replace extends Command {
         this.pluginCommandCooldown = pluginCommandCooldown;
         this.pluginBlacklist = pluginBlacklist;
         this.pluginCheckRegion = pluginCheckRegion;
+        this.pluginUtils = pluginUtils;
     }
 
     @Override
@@ -56,10 +56,10 @@ public class Replace extends Command {
 
         //Check if block(s) are valid or on the blacklist
         String[] tempTargetBlocks;
-        Map<String, Integer> targetBlocks = new HashMap<>();
+        Map<BlockState, Integer> targetBlocks = new HashMap<>();
         String target = baseParameters.get(1).toString().toLowerCase();
         if(target.contains(",")) {
-            tempTargetBlocks = target.split(",");
+            tempTargetBlocks = pluginUtils.splitNicely(target);
         } else {
             tempTargetBlocks = new String[] {target};
         }
@@ -76,16 +76,30 @@ public class Replace extends Command {
             } else {
                 i = String.valueOf(1);
             }
-            targetBlocks.put(s, Integer.valueOf(i));
-        }
-        for(String targetBlock : targetBlocks.keySet()) {
-            if (BlockTypes.get(targetBlock) == null) {
-                return new CommandResponse(prefix + ChatColor.RED + targetBlock.toUpperCase() + " is not a valid block!");
+            String[] states = new String[0];
+            if(s.contains("[") && s.contains("]")) {
+                String tempStates = s.substring(s.indexOf("[") + 1, s.indexOf("]"));
+                states = tempStates.split(",");
+                s = s.substring(0, s.indexOf("["));
             }
-            if(pluginBlacklist.checkBlockBanned(targetBlock)) {
-                return new CommandResponse(prefix + ChatColor.RED + "You cannot WorldEdit the following block! " + ChatColor.GOLD + targetBlock);
+            if (BlockTypes.get(s) == null) {
+                return new CommandResponse(prefix + ChatColor.RED + s.toUpperCase() + " is not a valid block!");
+            }
+            if(pluginBlacklist.checkBlockBanned(s)) {
+                return new CommandResponse(prefix + ChatColor.RED + "You cannot WorldEdit the following block! " + ChatColor.GOLD + s);
+            }
+            BlockType type = Objects.requireNonNull(BlockTypes.get(s));
+            if(states.length < 1) {
+                targetBlocks.put(type.getDefaultState(), Integer.valueOf(i));
+            } else {
+                BlockState state = pluginUtils.getBlockState(type, states, sender);
+                if(state == null) {
+                    return new CommandResponse("");
+                }
+                targetBlocks.put(state, Integer.valueOf(i));
             }
         }
+
         String[] tempSourceBlocks;
         List<BlockType> sourceBlocks = new ArrayList<>();
         String source = baseParameters.get(0).toString().toLowerCase();
@@ -124,8 +138,8 @@ public class Replace extends Command {
         //Get the block pattern and mask
         BlockTypeMask fromMask = new BlockTypeMask(extent, sourceBlocks);
         RandomPattern to = new RandomPattern();
-        for(String block : targetBlocks.keySet()) {
-            to.add(Objects.requireNonNull(BlockTypes.get(block)).getDefaultState(), targetBlocks.get(block));
+        for(BlockState block : targetBlocks.keySet()) {
+            to.add(block, targetBlocks.get(block));
         }
 
         //Check if the player's selection is larger than the max block volume limit
@@ -163,9 +177,9 @@ public class Replace extends Command {
             localSession.remember(editSession);
         } catch (Exception e) {
             Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "Unable to replace blocks in selection! (did volume exceed allowed amount?)");
-            return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + Arrays.toString(tempTargetBlocks).replace("[", "").replace("]", ""));
+            return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + Arrays.toString(tempTargetBlocks).substring(1, Arrays.toString(tempTargetBlocks).length() - 1).replaceAll("\\[.+]", ""));
         }
-        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Replacing " + blocksChanged + " " + Arrays.toString(tempSourceBlocks).replace("[", "").replace("]", "") + " with " + Arrays.toString(tempTargetBlocks).replace("[", "").replace("]", ""));
+        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Replacing " + blocksChanged + " " + Arrays.toString(tempSourceBlocks).replace("[", "").replace("]", "") + " with " + Arrays.toString(tempTargetBlocks).substring(1, Arrays.toString(tempTargetBlocks).length() - 1).replaceAll("\\[.+]", ""));
     }
 
 
