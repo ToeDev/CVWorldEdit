@@ -23,28 +23,26 @@ public class Utils {
         prefix = plugin.getPrefix();
     }
     public String[] splitNicely(String string) {
-        List<String> split = new ArrayList<>();
-        int open = string.indexOf("[");
-        int close = string.indexOf("]");
-        int comma = string.indexOf(",");
-
-        while (comma != -1) {
-            if (close < comma && open > comma) {
-
-                split.add(string.substring(0, comma));
-                string = string.substring(comma + 1);
-
-                open = string.indexOf("[");
-                close = string.indexOf("]");
-                comma = string.indexOf(",");
-            } else {
-                open = string.indexOf("[", comma + 1);
-                close = string.indexOf("]", comma + 1);
-                comma = string.indexOf(",", comma + 1);
+        if(string.contains("[") && string.contains("]") && string.contains(",")) {
+            string = string.concat("$");
+            List<String> split = new ArrayList<>();
+            while(string.length() > 1) {
+                int comma = string.indexOf(",");
+                int open = string.indexOf("[");
+                int close = string.indexOf("]");
+                if(comma < open) {
+                    int i = comma == -1 ? string.length() - 1 : comma;
+                    split.add(string.substring(0, i));
+                    string = string.substring(i + 1);
+                } else {
+                    split.add(string.substring(0, close + 1));
+                    string = string.substring(close + 2);
+                }
             }
+            return split.toArray(new String[0]);
+        } else {
+            return string.split(",");
         }
-        split.add(string);
-        return split.toArray(new String[0]);
     }
 
     public BlockState getBlockState(BlockType type, String[] states, Player player) {

@@ -130,6 +130,7 @@ public class SetCommand extends Command {
         }
 
         //Set the blocks
+        String log = Arrays.toString(tempTargetBlocks).substring(1, Arrays.toString(tempTargetBlocks).length() - 1);
         LocalSession localSession = WorldEdit.getInstance().getSessionManager().get(bPlayer);
         int blocksChanged;
         try (EditSession editSession = localSession.createEditSession(bPlayer)) {
@@ -137,8 +138,8 @@ public class SetCommand extends Command {
             localSession.remember(editSession);
         } catch (Exception e) {
             Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "Unable to replace blocks in selection! (did volume exceed allowed amount?)");
-            return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + Arrays.toString(tempTargetBlocks).substring(1, Arrays.toString(tempTargetBlocks).length() - 1).replaceAll("\\[.+]", ""));
+            return new CommandResponse(prefix + ChatColor.RED + "You cannot WE that many of the following block type at once! " + ChatColor.GOLD + log);
         }
-        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Setting " + blocksChanged + " " + Arrays.toString(tempTargetBlocks).substring(1, Arrays.toString(tempTargetBlocks).length() - 1).replaceAll("\\[.+]", ""));
+        return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Setting " + blocksChanged + " " + log);
     }
 }
