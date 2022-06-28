@@ -62,7 +62,7 @@ public class Help extends Command {
         cvrotate = ChatColor.GOLD + "/werotate <y> [x] [z]" + ChatColor.LIGHT_PURPLE + " - Rotates your clipboard on the y, x, and/or z axis. (y is required)";
         cvclearclipboard = ChatColor.GOLD + "/weclearclipboard" + ChatColor.LIGHT_PURPLE + " - Clears your current clipboard";
 
-        cvstack = ChatColor.GOLD + "/westack <number> [direction]" + ChatColor.LIGHT_PURPLE + " - Extend your selection in the specified direction or in the direction you're looking if not specified";
+        cvstack = ChatColor.GOLD + "/westack <number> [direction]" + ChatColor.LIGHT_PURPLE + " - Replicate your selection in the specified direction or in the direction you're looking if not specified";
         cvmove = ChatColor.GOLD + "/wemove <number> [direction]" + ChatColor.LIGHT_PURPLE + " - Move your selection in the specified direction or in the direction you're looking if not specified";
         cvset = ChatColor.GOLD + "/weset <targetBlock>" + ChatColor.LIGHT_PURPLE + " - Sets your current selection to the target block";
         cvreplace = ChatColor.GOLD + "/wereplace <sourceBlock> <targetBlock>" + ChatColor.LIGHT_PURPLE + " - Replaces the source blocks in your selection with the target block";
