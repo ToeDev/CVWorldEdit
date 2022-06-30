@@ -32,6 +32,7 @@ public class Paste extends Command {
 
     public Paste(CVWorldEdit plugin, CheckRegion pluginCheckRegion, CommandCooldown pluginCommandCooldown) {
         super("");
+        addOptionalBaseParameter(new CommandParameterString());
 
         prefix = plugin.getPrefix();
 
@@ -42,8 +43,17 @@ public class Paste extends Command {
     @Override
     public CommandResponse execute(Player sender, Set<String> set, Map<String, Object> map, List<Object> baseParameters) {
 
-        if (baseParameters.size() > 0) {
+        if(baseParameters.size() > 1) {
             return new CommandResponse(prefix + ChatColor.RED + "Invalid Command!" + ChatColor.LIGHT_PURPLE + " Proper Usage: Use /wepaste after copying an area with /wecopy");
+        }
+
+        boolean noAir = false;
+        if(baseParameters.size() > 0) {
+            if(((String) baseParameters.get(0)).equalsIgnoreCase("-a")) {
+                noAir = true;
+            } else {
+                return new CommandResponse(prefix + ChatColor.RED + baseParameters.get(0) + " is not a proper modifier!" + ChatColor.LIGHT_PURPLE + " Proper Usage: Use /wepaste -a");
+            }
         }
 
         //Check if the player currently has a clipboard stored
@@ -82,7 +92,7 @@ public class Paste extends Command {
 
         //perform the paste
         try (EditSession editSession = localSession.createEditSession(bPlayer)) {
-            Operation operation = holder.createPaste(editSession).to(BlockVector3.at(x, y, z)).build();
+            Operation operation = holder.createPaste(editSession).to(BlockVector3.at(x, y, z)).ignoreAirBlocks(noAir).build();
             Operations.complete(operation);
             localSession.remember(editSession);
         }
