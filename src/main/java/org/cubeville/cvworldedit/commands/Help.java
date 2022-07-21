@@ -142,7 +142,7 @@ public class Help extends Command {
             TextComponent previous = new TextComponent(ChatColor.AQUA + "<- Previous");
             previous.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Previous Page")));
             previous.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/wehelp 2"));
-            previous.addExtra(new TextComponent(ChatColor.BLUE + " | Page 2/3"));
+            previous.addExtra(new TextComponent(ChatColor.BLUE + " | Page 3/3"));
             out.add(new TextComponent(previous));
             for(TextComponent o : out) {
                 sender.spigot().sendMessage(o);
