@@ -57,7 +57,7 @@ public class Rotate extends Command {
         transform = transform.rotateY(-rotateY);
         transform = transform.rotateX(-rotateX);
         transform = transform.rotateZ(-rotateZ);
-        holder.setTransform(transform);
+        holder.setTransform(holder.getTransform().combine(transform));
 
         return new CommandResponse(prefix + ChatColor.LIGHT_PURPLE + "Clipboard rotated y:" + rotateY + " x:" + rotateX + " x:" + rotateZ);
     }
