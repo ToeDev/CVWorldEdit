@@ -372,6 +372,7 @@ public class CVWorldEdit extends JavaPlugin implements Listener {
             case "cvfaces":
                 return facesParser.execute(sender, args);
             case "cvreplace":
+            case "cvrep":
                 return replaceParser.execute(sender, args);
             case "cvstack":
                 return stackParser.execute(sender, args);
