@@ -1,5 +1,6 @@
 #These are 3rd party plugin permissions required for CVWorldEdit use
 
 - fawe.worldguard
+- fawe.bypass #Used to allow in-region WE to be used while player is standing outside their region
 - worldedit.anyblock.nbt
 - worldedit.cui
