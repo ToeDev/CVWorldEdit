@@ -3,6 +3,8 @@ package org.cubeville.cvworldedit.commands;
 import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitPlayer;
+import com.sk89q.worldedit.function.mask.ExistingBlockMask;
+import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.internal.annotation.Offset;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
@@ -211,10 +213,11 @@ public class Stack extends Command {
 
         //stack the selection
         try (EditSession editSession = localSession.createEditSession(bPlayer)) {
+            Mask mask = new ExistingBlockMask(editSession);
             editSession.stackCuboidRegion(playerSelection, BlockVector3.at(
                     ((isPositiveX) ? x : -x),
                     ((isPositiveY) ? y : -y),
-                    ((isPositiveZ) ? z : -z)), amount, true);
+                    ((isPositiveZ) ? z : -z)), amount, false, false, mask);
             localSession.remember(editSession);
         } catch (MaxChangedBlocksException e) {
             Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Unable to stack region/selection!");
