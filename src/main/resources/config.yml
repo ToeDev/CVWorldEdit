@@ -6,17 +6,17 @@ Command-Cooldown: 2
 ################################################################################
 # Block volume limit per command (with the exception of the plotclear command) #
 ################################################################################
-Block-Volume-Limit: 50000
+Block-Volume-Limit: 150000
 
 #################################################################################################################
 # Pre-defined volume of the plot being cleared. this prevents any possibility of the wrong region being cleared #
 #################################################################################################################
-Plot-Clear-Volume: 22500000
+Plot-Clear-Volume: 29378880
 
 ###################################################################
 # Pre-defined y level that a plotclear regenerates its terrain to #
 ###################################################################
-Plot-Y-Level: 65 #this is CV specific. used for cvclearplot command to regen cleared plot to a certain Y-level
+Plot-Y-Level: 63 #this is CV specific. used for cvclearplot command to regen cleared plot to a certain Y-level
 
 ################################################################################################################
 # Plotclears that can run at the same time. admin plotclears (ie /plotclear plot_2) are exempt from this limit #
@@ -154,3 +154,12 @@ Block-Blacklist:
   - CHORUS_FLOWER
   - REDSTONE_TORCH
   - REDSTONE_BLOCK
+  - REDSTONE_WALL_TORCH
+  - DISPENSER
+  - REDSTONE_WIRE
+  - SCULK_SHRIEKER
+  - PIGLIN_HEAD
+  - SUSPICIOUS_SAND
+  - SUSPICIOUS_GRAVEL
+  - FROGSPAWN
+  - BUBBLE_COLUMN

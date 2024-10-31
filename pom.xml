@@ -6,7 +6,7 @@
 
     <groupId>org.cubeville</groupId>
     <artifactId>CVWorldEdit</artifactId>
-    <version>1.20</version>
+    <version>1.21</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -28,7 +28,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.20-R0.1-SNAPSHOT</version>
+            <version>1.21-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -44,7 +44,7 @@
         <dependency>
             <groupId>org.cubeville</groupId>
             <artifactId>CVTools</artifactId>
-            <version>1.20</version>
+            <version>1.21</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
