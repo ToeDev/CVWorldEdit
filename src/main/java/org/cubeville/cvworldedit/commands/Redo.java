@@ -48,7 +48,12 @@ public class Redo extends Command {
 
         //Attempt redoing an undone action from the players localsession history
         LocalSession localSession = WorldEdit.getInstance().getSessionManager().get(bPlayer);
-        EditSession redone = localSession.redo(localSession.getBlockBag(bPlayer), bPlayer);
+        EditSession redone;
+        try {
+            redone = localSession.redo(localSession.getBlockBag(bPlayer), bPlayer);
+        } catch(IllegalStateException ignored) {
+            redone = null;
+        }
 
         //Check if the redo was successful
         if (redone != null) {

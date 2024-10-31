@@ -48,7 +48,12 @@ public class Undo extends Command {
 
         //Attempt undoing an action from the players localsession history
         LocalSession localSession = WorldEdit.getInstance().getSessionManager().get(bPlayer);
-        EditSession undone = localSession.undo(localSession.getBlockBag(bPlayer), bPlayer);
+        EditSession undone;
+        try {
+            undone = localSession.undo(localSession.getBlockBag(bPlayer), bPlayer);
+        } catch(IllegalStateException ignored) {
+            undone = null;
+        }
 
         //Check if the undo was successful
         if (undone != null) {
