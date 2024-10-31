@@ -1,106 +1,95 @@
 main: org.cubeville.cvworldedit.CVWorldEdit
 name: CVWorldEdit
-version: 1.18
-api-version: 1.18
+version: 1.21
+api-version: 1.21
 description: 'CVWorldEdit Plugin'
 author: ToeMan_
 depend: [WorldGuard,WorldEdit,CVTools]
 commands:
   cvhelp:
     aliases: wehelp
-    permission: CVWorldEdit.selection.commands
+    permission: cvworldedit.help.command
   cvwand:
     aliases: wewand
-    permission: CVWorldEdit.selection.commands
+    permission: cvworldedit.selection.commands
   cvpos1:
     aliases: wepos1
-    permission: CVWorldEdit.selection.commands
+    permission: cvworldedit.selection.commands
   cvpos2:
     aliases: wepos2
-    permission: CVWorldEdit.selection.commands
+    permission: cvworldedit.selection.commands
   cvhpos1:
     aliases: wehpos1
-    permission: CVWorldEdit.selection.commands
+    permission: cvworldedit.selection.commands
   cvhpos2:
     aliases: wehpos2
-    permission: CVWorldEdit.selection.commands
+    permission: cvworldedit.selection.commands
   cvexpand:
     aliases: weexpand
-    permission: CVWorldEdit.selection.commands
+    permission: cvworldedit.selection.commands
   cvcontract:
     aliases: wecontract
-    permission: CVWorldEdit.selection.commands
+    permission: cvworldedit.selection.commands
   cvshift:
     aliases: weshift
-    permission: CVWorldEdit.selection.commands
+    permission: cvworldedit.selection.commands
   cvselection:
     aliases: weselection
-    permission: CVWorldEdit.selection.commands
+    permission: cvworldedit.selection.commands
   cvsel:
     aliases: wesel
-    permission: CVWorldEdit.selection.commands
+    permission: cvworldedit.selection.commands
   cvsize:
     aliases: wesize
-    permission: CVWorldEdit.selection.commands
+    permission: cvworldedit.selection.commands
   cvcut:
     aliases: wecut
-    permission: CVWorldEdit.execute.commands
+    permission: cvworldedit.cut.commmand
   cvcopy:
     aliases: wecopy
-    permission: CVWorldEdit.execute.commands
+    permission: cvworldedit.copy.command
   cvpaste:
     aliases: wepaste
-    permission: CVWorldEdit.execute.commands
+    permission: cvworldedit.paste.command
   cvrotate:
     aliases: werotate
-    permission: CVWorldEdit.execute.commands
+    permission: cvworldedit.rotate.command
   cvflip:
     aliases: weflip
-    permission: CVWorldEdit.execute.commands
+    permission: cvworldedit.flip.command
   cvset:
     aliases: weset
-    permission: CVWorldEdit.execute.commands
+    permission: cvworldedit.set.command
   cvwalls:
     aliases: wewalls
-    permission: CVWorldEdit.execute.commands
+    permission: cvworldedit.walls.command
   cvfaces:
     aliases: wefaces
-    permission: CVWorldEdit.execute.commands
+    permission: cvworldedit.faces.command
   cvreplace:
     aliases: wereplace
-    permission: CVWorldEdit.execute.commands
+    permission: cvworldedit.replace.command
   cvrep:
     aliases: werep
-    permission: CVWorldEdit.execute.commands
+    permission: cvworldedit.replace.command
   cvstack:
     aliases: westack
-    permission: CVWorldEdit.execute.commands
+    permission: cvworldedit.stack.command
   cvmove:
     aliases: wemove
-    permission: CVWorldEdit.execute.commands
+    permission: cvworldedit.move.commmand
   cvundo:
     aliases: weundo
-    permission: CVWorldEdit.execute.commands
+    permission: cvworldedit.undo.command
   cvredo:
     aliases: weredo
-    permission: CVWorldEdit.execute.commands
+    permission: cvworldedit.redo.command
   cvclearhistory:
     aliases: weclearhistory
-    permission: CVWorldEdit.execute.commands
+    permission: cvworldedit.clearhistory.command
   cvclearclipboard:
     aliases: weclearclipboard
-    permission: CVWorldEdit.execute.commands
+    permission: cvworldedit.clearclipboard.command
   cvclearplot:
     aliases: weclearplot
-    permission: CVWorldEdit.clearplot.command
-
-permissions:
-  CVWorldEdit.selection.commands:
-    description: Permissions to cvwand, cvpos1, cvpos2, cvexpand, cvcontract, cvsel, cvselection, and cvsize
-    default: op
-  CVWorldEdit.execute.commands:
-    description: Permissions to cvcopy, cvpaste, cvset, cvreplace, cvundo, cvredo, and cvclearhistory
-    default: op
-  CVWorldEdit.clearplot.command:
-    description: Permission to the cvclearplot command
-    default: op
+    permission: cvworldedit.clearplot.command
