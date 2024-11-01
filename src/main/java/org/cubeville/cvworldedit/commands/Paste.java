@@ -64,7 +64,7 @@ public class Paste extends Command {
             holder = localSession.getClipboard();
         } catch(EmptyClipboardException e) {
             Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "Players clipboard returned null! (should they have one?)");
-            return new CommandResponse(prefix + ChatColor.RED + "No clipboard to rotate!" + ChatColor.LIGHT_PURPLE + " Proper Usage: Use /werotate after copying an area with /wecopy or cutting an area with /wecut");
+            return new CommandResponse(prefix + ChatColor.RED + "No clipboard to paste!" + ChatColor.LIGHT_PURPLE + " Proper Usage: Use /wepaste after copying an area with /wecopy or cutting an area with /wecut");
         }
 
         //Get the players current position and check if the paste location is within their region
