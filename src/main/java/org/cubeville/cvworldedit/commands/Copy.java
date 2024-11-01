@@ -69,12 +69,12 @@ public class Copy extends Command {
         }
 
         //Check if any blocks in the targetted selection are on the Blacklist
-        for(BlockVector3 vec : region) {
+        /*for(BlockVector3 vec : region) {
             String block = bPlayer.getExtent().getBlock(vec).getBlockType().toString().toLowerCase().substring(10);
             if(pluginBlacklist.checkBlockBanned(block)) {
                 return new CommandResponse(prefix + ChatColor.RED + "You cannot copy the following block with WorldEdit! " + ChatColor.GOLD + block);
             }
-        }
+        }*/
 
         //Check if the player's selection is in a region they are owner of
         if(!pluginCheckRegion.isOwner(bPlayer, region)) {
