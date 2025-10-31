@@ -1,7 +1,7 @@
 main: org.cubeville.cvworldedit.CVWorldEdit
 name: CVWorldEdit
-version: 1.21
-api-version: 1.21
+version: 1.21.8
+api-version: 1.21.8
 description: 'CVWorldEdit Plugin'
 author: ToeMan_
 depend: [WorldGuard,WorldEdit,CVTools]
